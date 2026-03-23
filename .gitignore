@@ -1,0 +1,15 @@
+.vs
+.vscode
+.claude
+.codex
+.cursor
+
+**/*.so
+**/*.a
+**/*.o
+**/*.lib
+**/*.dylib
+**/*.dll
+**/*.exe
+
+build/
