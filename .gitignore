@@ -11,5 +11,5 @@
 **/*.dylib
 **/*.dll
 **/*.exe
-
+__pycache__
 build/
