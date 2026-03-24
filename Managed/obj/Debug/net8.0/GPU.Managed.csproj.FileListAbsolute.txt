@@ -1,0 +1,12 @@
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.AssemblyInfoInputs.cache
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.AssemblyInfo.cs
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.csproj.CoreCompileInputs.cache
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.sourcelink.json
+C:\Users\gabe\projects\GPU\Managed\bin\Debug\net8.0\GPU.Managed.deps.json
+C:\Users\gabe\projects\GPU\Managed\bin\Debug\net8.0\GPU.Managed.dll
+C:\Users\gabe\projects\GPU\Managed\bin\Debug\net8.0\GPU.Managed.pdb
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.dll
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\refint\GPU.Managed.dll
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\GPU.Managed.pdb
+C:\Users\gabe\projects\GPU\Managed\obj\Debug\net8.0\ref\GPU.Managed.dll

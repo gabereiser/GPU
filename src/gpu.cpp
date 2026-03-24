@@ -3,70 +3,60 @@
 
 #include "gpu/gpu.h"
 
-#include <vulkan/vulkan.h>
-
-namespace {
-
-thread_local const char* g_lastError = nullptr;
-bool g_glfwInitialized = false;
-
-void setLastError(const char* message) {
-    g_lastError = message;
-}
-
-}  // namespace
+#include "Internal/Error.h"
+#include "Internal/GlfwState.h"
 
 extern "C" {
 
-uint32_t GPU_CALL gpuGetApiVersion(void) {
-    setLastError(nullptr);
-    return VK_API_VERSION_1_0;
+GPU_API uint32_t GPU_CALL gpuGetApiVersion(void) {
+    gpu::internal::clearLastError();
+    return VK_HEADER_VERSION_COMPLETE;
 }
 
-GPUFunction GPU_CALL gpuGetInstanceProcAddr(GPUHandle instance, const char* name) {
-    setLastError(nullptr);
-
-    if (name == nullptr) {
-        setLastError("Function name must not be null.");
-        return nullptr;
-    }
-
-    return reinterpret_cast<GPUFunction>(
-        vkGetInstanceProcAddr(reinterpret_cast<VkInstance>(instance), name));
+GPU_API const char* GPU_CALL gpuGetLastError(void) {
+    return gpu::internal::getLastError();
 }
 
-const char* GPU_CALL gpuGetLastError(void) {
-    return g_lastError;
-}
-
-int32_t GPU_CALL gpuGetRequiredInstanceExtensions(const char*** extensions, uint32_t* count) {
-    setLastError(nullptr);
+GPU_API int32_t GPU_CALL gpuGetRequiredInstanceExtensions(const char*** extensions, uint32_t* count) {
+    gpu::internal::clearLastError();
 
     if (extensions == nullptr || count == nullptr) {
-        setLastError("Extensions and count outputs must not be null.");
+        gpu::internal::setLastError("Extensions and count outputs must not be null.");
         return GLFW_FALSE;
     }
 
-    if (!g_glfwInitialized) {
-        if (glfwInit() == GLFW_FALSE) {
-            setLastError("Failed to initialize GLFW.");
-            *extensions = nullptr;
-            *count = 0;
-            return GLFW_FALSE;
-        }
-
-        g_glfwInitialized = true;
+    if (!gpu::internal::ensureGlfwInitialized()) {
+        *extensions = nullptr;
+        *count = 0;
+        return GLFW_FALSE;
     }
 
     const char** requiredExtensions = glfwGetRequiredInstanceExtensions(count);
     if (requiredExtensions == nullptr || *count == 0) {
-        setLastError("Failed to query GLFW Vulkan instance extensions.");
+        gpu::internal::setLastError("Failed to query GLFW Vulkan instance extensions.");
         *extensions = nullptr;
         *count = 0;
         return GLFW_FALSE;
     }
 
     *extensions = requiredExtensions;
+    return GLFW_TRUE;
+}
+
+GPU_API int32_t GPU_CALL gpuGetFramebufferSizeGlfw(void* glfwWindow, uint32_t* width, uint32_t* height) {
+    gpu::internal::clearLastError();
+
+    if (glfwWindow == nullptr || width == nullptr || height == nullptr) {
+        gpu::internal::setLastError("GLFW window, width, and height outputs must not be null.");
+        return GLFW_FALSE;
+    }
+
+    int framebufferWidth = 0;
+    int framebufferHeight = 0;
+    glfwGetFramebufferSize(static_cast<GLFWwindow*>(glfwWindow), &framebufferWidth, &framebufferHeight);
+
+    *width = static_cast<uint32_t>(framebufferWidth);
+    *height = static_cast<uint32_t>(framebufferHeight);
     return GLFW_TRUE;
 }
 
