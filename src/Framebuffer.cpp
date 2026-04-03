@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuFramebufferCreate(
     *framebuffer = nullptr;
 
     VkFramebuffer handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateFramebuffer(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateFramebuffer(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create framebuffer.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuFramebufferCreate(
 
     GPUFramebuffer wrapper = new (std::nothrow) GPUFramebuffer_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyFramebuffer(device->handle, handle, allocator);
+        gpuDestroyFramebuffer(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Framebuffer.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuFramebufferDestroy(GPUFramebuffer framebuffer) {
         return;
     }
 
-    vkDestroyFramebuffer(framebuffer->device->handle, framebuffer->handle, framebuffer->allocator);
+    gpuDestroyFramebuffer(framebuffer->device->handle, framebuffer->handle, framebuffer->allocator);
     delete framebuffer;
 }
 

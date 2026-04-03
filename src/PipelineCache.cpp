@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCacheCreate(
     *pipelineCache = nullptr;
 
     VkPipelineCache handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreatePipelineCache(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreatePipelineCache(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create pipeline cache.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCacheCreate(
 
     GPUPipelineCache wrapper = new (std::nothrow) GPUPipelineCache_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyPipelineCache(device->handle, handle, allocator);
+        gpuDestroyPipelineCache(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate PipelineCache.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuPipelineCacheDestroy(GPUPipelineCache pipelineCache) {
         return;
     }
 
-    vkDestroyPipelineCache(pipelineCache->device->handle, pipelineCache->handle, pipelineCache->allocator);
+    gpuDestroyPipelineCache(pipelineCache->device->handle, pipelineCache->handle, pipelineCache->allocator);
     delete pipelineCache;
 }
 

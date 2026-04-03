@@ -26,7 +26,7 @@ void gpuSurfaceDrop(GPUSurface surface) {
 
     if (surface->refCount == 0) {
         if (surface->handle != VK_NULL_HANDLE) {
-            vkDestroySurfaceKHR(surface->instance->handle, surface->handle, surface->allocator);
+            gpuDestroySurfaceKHR(surface->instance->handle, surface->handle, surface->allocator);
         }
         gpuInstanceDrop(surface->instance);
         delete surface;
@@ -72,7 +72,7 @@ GPU_API VkResult GPU_CALL gpuSurfaceCreateGlfw(
 
     GPUSurface wrapper = new (std::nothrow) GPUSurface_T{instance, handle, allocator, 1, false};
     if (wrapper == nullptr) {
-        vkDestroySurfaceKHR(instance->handle, handle, allocator);
+        gpuDestroySurfaceKHR(instance->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Surface.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }

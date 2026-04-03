@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuPipelineLayoutCreate(
     *pipelineLayout = nullptr;
 
     VkPipelineLayout handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreatePipelineLayout(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreatePipelineLayout(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create pipeline layout.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuPipelineLayoutCreate(
 
     GPUPipelineLayout wrapper = new (std::nothrow) GPUPipelineLayout_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyPipelineLayout(device->handle, handle, allocator);
+        gpuDestroyPipelineLayout(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate PipelineLayout.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuPipelineLayoutDestroy(GPUPipelineLayout pipelineLayout)
         return;
     }
 
-    vkDestroyPipelineLayout(pipelineLayout->device->handle, pipelineLayout->handle, pipelineLayout->allocator);
+    gpuDestroyPipelineLayout(pipelineLayout->device->handle, pipelineLayout->handle, pipelineLayout->allocator);
     delete pipelineLayout;
 }
 

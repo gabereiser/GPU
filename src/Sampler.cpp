@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuSamplerCreate(
     *sampler = nullptr;
 
     VkSampler handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateSampler(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateSampler(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create sampler.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuSamplerCreate(
 
     GPUSampler wrapper = new (std::nothrow) GPUSampler_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroySampler(device->handle, handle, allocator);
+        gpuDestroySampler(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Sampler.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuSamplerDestroy(GPUSampler sampler) {
         return;
     }
 
-    vkDestroySampler(sampler->device->handle, sampler->handle, sampler->allocator);
+    gpuDestroySampler(sampler->device->handle, sampler->handle, sampler->allocator);
     delete sampler;
 }
 

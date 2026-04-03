@@ -23,14 +23,14 @@ GPU_API VkResult GPU_CALL gpuAccelerationStructureNVCreate(
     }
     *accelerationStructure = nullptr;
     VkAccelerationStructureNV handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateAccelerationStructureNV(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateAccelerationStructureNV(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create acceleration structure NV.");
         return result;
     }
     GPUAccelerationStructureNV wrapper = new (std::nothrow) GPUAccelerationStructureNV_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyAccelerationStructureNV(device->handle, handle, allocator);
+        gpuDestroyAccelerationStructureNV(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate AccelerationStructureNV.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuAccelerationStructureNVDestroy(GPUAccelerationStructure
         return;
     }
     accelerationStructure->destroyRequested = true;
-    vkDestroyAccelerationStructureNV(accelerationStructure->device->handle, accelerationStructure->handle, accelerationStructure->allocator);
+    gpuDestroyAccelerationStructureNV(accelerationStructure->device->handle, accelerationStructure->handle, accelerationStructure->allocator);
     gpuDeviceDrop(accelerationStructure->device);
     delete accelerationStructure;
 }

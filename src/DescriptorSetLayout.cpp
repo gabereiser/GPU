@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorSetLayoutCreate(
     *descriptorSetLayout = nullptr;
 
     VkDescriptorSetLayout handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDescriptorSetLayout(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateDescriptorSetLayout(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create descriptor set layout.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorSetLayoutCreate(
 
     GPUDescriptorSetLayout wrapper = new (std::nothrow) GPUDescriptorSetLayout_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyDescriptorSetLayout(device->handle, handle, allocator);
+        gpuDestroyDescriptorSetLayout(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DescriptorSetLayout.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuDescriptorSetLayoutDestroy(GPUDescriptorSetLayout descr
         return;
     }
 
-    vkDestroyDescriptorSetLayout(
+    gpuDestroyDescriptorSetLayout(
         descriptorSetLayout->device->handle,
         descriptorSetLayout->handle,
         descriptorSetLayout->allocator);

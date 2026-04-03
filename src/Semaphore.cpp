@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuSemaphoreCreate(
     const VkSemaphoreCreateInfo* actualCreateInfo = createInfo != nullptr ? createInfo : &defaultCreateInfo;
 
     VkSemaphore handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateSemaphore(device->handle, actualCreateInfo, allocator, &handle);
+    const VkResult result = gpuCreateSemaphore(device->handle, actualCreateInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create semaphore.");
         return result;
@@ -35,7 +35,7 @@ GPU_API VkResult GPU_CALL gpuSemaphoreCreate(
 
     GPUSemaphore wrapper = new (std::nothrow) GPUSemaphore_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroySemaphore(device->handle, handle, allocator);
+        gpuDestroySemaphore(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Semaphore.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -49,7 +49,7 @@ GPU_API void GPU_CALL gpuSemaphoreDestroy(GPUSemaphore semaphore) {
         return;
     }
 
-    vkDestroySemaphore(semaphore->deviceHandle, semaphore->handle, semaphore->allocator);
+    gpuDestroySemaphore(semaphore->deviceHandle, semaphore->handle, semaphore->allocator);
     delete semaphore;
 }
 

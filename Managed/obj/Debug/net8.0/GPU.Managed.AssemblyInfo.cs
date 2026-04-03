@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GPU.Managed")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+946989fc7ce4105fb075872e73b7492dc1d5aefa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61f86f7a6e46c93b51aaef7e3cdab7a5df70e0e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("GPU.Managed")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GPU.Managed")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

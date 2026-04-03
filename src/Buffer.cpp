@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuBufferCreate(
     *buffer = nullptr;
 
     VkBuffer handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateBuffer(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateBuffer(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create buffer.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuBufferCreate(
 
     GPUBuffer wrapper = new (std::nothrow) GPUBuffer_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyBuffer(device->handle, handle, allocator);
+        gpuDestroyBuffer(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Buffer.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuBufferDestroy(GPUBuffer buffer) {
         return;
     }
 
-    vkDestroyBuffer(buffer->deviceHandle, buffer->handle, buffer->allocator);
+    gpuDestroyBuffer(buffer->deviceHandle, buffer->handle, buffer->allocator);
     delete buffer;
 }
 

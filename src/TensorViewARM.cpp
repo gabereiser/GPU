@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuTensorViewARMCreate(
     *tensorView = nullptr;
 
     VkTensorViewARM handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateTensorViewARM(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateTensorViewARM(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create tensor view ARM.");
         return result;
@@ -35,7 +35,7 @@ GPU_API VkResult GPU_CALL gpuTensorViewARMCreate(
 
     GPUTensorViewARM wrapper = new (std::nothrow) GPUTensorViewARM_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyTensorViewARM(device->handle, handle, allocator);
+        gpuDestroyTensorViewARM(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate TensorViewARM.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -51,7 +51,7 @@ GPU_API void GPU_CALL gpuTensorViewARMDestroy(GPUTensorViewARM tensorView) {
     }
 
     tensorView->destroyRequested = true;
-    vkDestroyTensorViewARM(tensorView->device->handle, tensorView->handle, tensorView->allocator);
+    gpuDestroyTensorViewARM(tensorView->device->handle, tensorView->handle, tensorView->allocator);
     gpuDeviceDrop(tensorView->device);
     delete tensorView;
 }

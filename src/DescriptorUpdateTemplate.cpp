@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorUpdateTemplateCreate(
     *descriptorUpdateTemplate = nullptr;
 
     VkDescriptorUpdateTemplate handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDescriptorUpdateTemplate(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateDescriptorUpdateTemplate(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create descriptor update template.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorUpdateTemplateCreate(
 
     GPUDescriptorUpdateTemplate wrapper = new (std::nothrow) GPUDescriptorUpdateTemplate_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyDescriptorUpdateTemplate(device->handle, handle, allocator);
+        gpuDestroyDescriptorUpdateTemplate(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DescriptorUpdateTemplate.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -45,7 +45,7 @@ GPU_API void GPU_CALL gpuDescriptorUpdateTemplateDestroy(
         return;
     }
 
-    vkDestroyDescriptorUpdateTemplate(
+    gpuDestroyDescriptorUpdateTemplate(
         descriptorUpdateTemplate->device->handle,
         descriptorUpdateTemplate->handle,
         descriptorUpdateTemplate->allocator);

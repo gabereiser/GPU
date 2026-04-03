@@ -1,10 +1,12 @@
 #pragma once
 
 #include "gpu/gpu.h"
-
-struct GPUBufferCollectionFUCHSIA_T {
+#if defined(VK_USE_PLATFORM_FUCHSIA)
+struct GPUBufferCollectionFUCHSIA_T
+{
     GPUDevice device;
     VkBufferCollectionFUCHSIA handle;
-    const VkAllocationCallbacks* allocator;
+    const VkAllocationCallbacks *allocator;
     bool destroyRequested;
 };
+#endif

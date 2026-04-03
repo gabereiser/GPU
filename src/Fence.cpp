@@ -28,7 +28,7 @@ GPU_API VkResult GPU_CALL gpuFenceCreate(
     const VkFenceCreateInfo* actualCreateInfo = createInfo != nullptr ? createInfo : &defaultCreateInfo;
 
     VkFence handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateFence(device->handle, actualCreateInfo, allocator, &handle);
+    const VkResult result = gpuCreateFence(device->handle, actualCreateInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create fence.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuFenceCreate(
 
     GPUFence wrapper = new (std::nothrow) GPUFence_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyFence(device->handle, handle, allocator);
+        gpuDestroyFence(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Fence.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -50,7 +50,7 @@ GPU_API void GPU_CALL gpuFenceDestroy(GPUFence fence) {
         return;
     }
 
-    vkDestroyFence(fence->deviceHandle, fence->handle, fence->allocator);
+    gpuDestroyFence(fence->deviceHandle, fence->handle, fence->allocator);
     delete fence;
 }
 

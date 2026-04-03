@@ -39,7 +39,7 @@ GPU_API uint32_t GPU_CALL gpuPhysicalDeviceGetDisplayCountKHR(GPUPhysicalDevice 
     }
 
     uint32_t count = 0;
-    const VkResult result = vkGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, nullptr);
+    const VkResult result = gpuGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to get display count.");
         return 0;
@@ -67,7 +67,7 @@ GPU_API VkResult GPU_CALL gpuPhysicalDeviceGetDisplayKHR(
     *display = nullptr;
 
     uint32_t count = 0;
-    VkResult result = vkGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, nullptr);
+    VkResult result = gpuGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to get display count.");
         return result;
@@ -79,7 +79,7 @@ GPU_API VkResult GPU_CALL gpuPhysicalDeviceGetDisplayKHR(
     }
 
     std::vector<VkDisplayPropertiesKHR> properties(count);
-    result = vkGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, properties.data());
+    result = gpuGetPhysicalDeviceDisplayPropertiesKHR(physicalDevice->handle, &count, properties.data());
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to enumerate displays.");
         return result;
@@ -114,7 +114,7 @@ GPU_API uint32_t GPU_CALL gpuDisplayKHRGetModeCountKHR(GPUDisplayKHR display) {
 
     uint32_t count = 0;
     const VkResult result =
-        vkGetDisplayModePropertiesKHR(display->physicalDevice->handle, display->handle, &count, nullptr);
+        gpuGetDisplayModePropertiesKHR(display->physicalDevice->handle, display->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to get display mode count.");
         return 0;
@@ -143,7 +143,7 @@ GPU_API VkResult GPU_CALL gpuDisplayKHRGetModeKHR(
 
     uint32_t count = 0;
     VkResult result =
-        vkGetDisplayModePropertiesKHR(display->physicalDevice->handle, display->handle, &count, nullptr);
+        gpuGetDisplayModePropertiesKHR(display->physicalDevice->handle, display->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to get display mode count.");
         return result;
@@ -155,7 +155,7 @@ GPU_API VkResult GPU_CALL gpuDisplayKHRGetModeKHR(
     }
 
     std::vector<VkDisplayModePropertiesKHR> properties(count);
-    result = vkGetDisplayModePropertiesKHR(
+    result = gpuGetDisplayModePropertiesKHR(
         display->physicalDevice->handle,
         display->handle,
         &count,

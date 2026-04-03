@@ -23,7 +23,7 @@ GPU_API VkResult GPU_CALL gpuCommandPoolCreate(
     *commandPool = nullptr;
 
     VkCommandPool handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateCommandPool(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateCommandPool(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create command pool.");
         return result;
@@ -31,7 +31,7 @@ GPU_API VkResult GPU_CALL gpuCommandPoolCreate(
 
     GPUCommandPool wrapper = new (std::nothrow) GPUCommandPool_T{device, device->handle, handle, allocator, nullptr};
     if (wrapper == nullptr) {
-        vkDestroyCommandPool(device->handle, handle, allocator);
+        gpuDestroyCommandPool(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate CommandPool.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -48,12 +48,12 @@ GPU_API void GPU_CALL gpuCommandPoolDestroy(GPUCommandPool commandPool) {
     GPUCommandBuffer buffer = commandPool->firstCommandBuffer;
     while (buffer != nullptr) {
         GPUCommandBuffer next = buffer->next;
-        vkFreeCommandBuffers(commandPool->deviceHandle, commandPool->handle, 1, &buffer->handle);
+        gpuFreeCommandBuffers(commandPool->deviceHandle, commandPool->handle, 1, &buffer->handle);
         delete buffer;
         buffer = next;
     }
 
-    vkDestroyCommandPool(commandPool->deviceHandle, commandPool->handle, commandPool->allocator);
+    gpuDestroyCommandPool(commandPool->deviceHandle, commandPool->handle, commandPool->allocator);
     delete commandPool;
 }
 

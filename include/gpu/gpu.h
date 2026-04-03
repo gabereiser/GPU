@@ -484,7 +484,7 @@ GPU_API VkResult GPU_CALL gpuMicromapEXTCreate(
 GPU_API void GPU_CALL gpuMicromapEXTDestroy(GPUMicromapEXT micromap);
 GPU_API VkMicromapEXT GPU_CALL gpuMicromapEXTGetVkHandle(GPUMicromapEXT micromap);
 GPU_API GPUDevice GPU_CALL gpuMicromapEXTGetDevice(GPUMicromapEXT micromap);
-
+#ifdef FUCHSIA
 GPU_API VkResult GPU_CALL gpuBufferCollectionFUCHSIACreate(
     GPUDevice device,
     const VkBufferCollectionCreateInfoFUCHSIA* createInfo,
@@ -493,7 +493,7 @@ GPU_API VkResult GPU_CALL gpuBufferCollectionFUCHSIACreate(
 GPU_API void GPU_CALL gpuBufferCollectionFUCHSIADestroy(GPUBufferCollectionFUCHSIA collection);
 GPU_API VkBufferCollectionFUCHSIA GPU_CALL gpuBufferCollectionFUCHSIAGetVkHandle(GPUBufferCollectionFUCHSIA collection);
 GPU_API GPUDevice GPU_CALL gpuBufferCollectionFUCHSIAGetDevice(GPUBufferCollectionFUCHSIA collection);
-
+#endif
 GPU_API VkResult GPU_CALL gpuPipelineBinaryKHRCreate(
     GPUDevice device,
     const VkPipelineBinaryCreateInfoKHR* createInfo,
@@ -600,7 +600,7 @@ GPU_API VkVideoSessionParametersKHR GPU_CALL gpuVideoSessionParametersKHRGetVkHa
     GPUVideoSessionParametersKHR videoSessionParameters);
 GPU_API GPUDevice GPU_CALL gpuVideoSessionParametersKHRGetDevice(
     GPUVideoSessionParametersKHR videoSessionParameters);
-
+#if defined(VK_ENABLE_SCISYNC)
 GPU_API VkResult GPU_CALL gpuSemaphoreSciSyncPoolNVCreate(
     GPUDevice device,
     const VkSemaphoreSciSyncPoolCreateInfoNV* createInfo,
@@ -610,7 +610,7 @@ GPU_API void GPU_CALL gpuSemaphoreSciSyncPoolNVDestroy(GPUSemaphoreSciSyncPoolNV
 GPU_API VkSemaphoreSciSyncPoolNV GPU_CALL gpuSemaphoreSciSyncPoolNVGetVkHandle(
     GPUSemaphoreSciSyncPoolNV semaphoreSciSyncPool);
 GPU_API GPUDevice GPU_CALL gpuSemaphoreSciSyncPoolNVGetDevice(GPUSemaphoreSciSyncPoolNV semaphoreSciSyncPool);
-
+#endif
 #if defined(VK_ENABLE_BETA_EXTENSIONS)
 GPU_API VkResult GPU_CALL gpuCudaModuleNVCreate(
     GPUDevice device,

@@ -22,14 +22,14 @@ GPU_API VkResult GPU_CALL gpuPerformanceConfigurationINTELAcquire(
     }
     *configuration = nullptr;
     VkPerformanceConfigurationINTEL handle = VK_NULL_HANDLE;
-    const VkResult result = vkAcquirePerformanceConfigurationINTEL(device->handle, acquireInfo, &handle);
+    const VkResult result = gpuAcquirePerformanceConfigurationINTEL(device->handle, acquireInfo, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to acquire performance configuration INTEL.");
         return result;
     }
     GPUPerformanceConfigurationINTEL wrapper = new (std::nothrow) GPUPerformanceConfigurationINTEL_T{device, handle, false};
     if (wrapper == nullptr) {
-        vkReleasePerformanceConfigurationINTEL(device->handle, handle);
+        gpuReleasePerformanceConfigurationINTEL(device->handle, handle);
         gpu::internal::setLastError("Failed to allocate PerformanceConfigurationINTEL.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -43,7 +43,7 @@ GPU_API void GPU_CALL gpuPerformanceConfigurationINTELRelease(GPUPerformanceConf
         return;
     }
     configuration->destroyRequested = true;
-    vkReleasePerformanceConfigurationINTEL(configuration->device->handle, configuration->handle);
+    gpuReleasePerformanceConfigurationINTEL(configuration->device->handle, configuration->handle);
     gpuDeviceDrop(configuration->device);
     delete configuration;
 }

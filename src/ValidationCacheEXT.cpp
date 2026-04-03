@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuValidationCacheEXTCreate(
     *validationCache = nullptr;
 
     VkValidationCacheEXT handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateValidationCacheEXT(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateValidationCacheEXT(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create validation cache.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuValidationCacheEXTCreate(
     GPUValidationCacheEXT wrapper =
         new (std::nothrow) GPUValidationCacheEXT_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyValidationCacheEXT(device->handle, handle, allocator);
+        gpuDestroyValidationCacheEXT(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate ValidationCacheEXT.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuValidationCacheEXTDestroy(GPUValidationCacheEXT validat
     }
 
     validationCache->destroyRequested = true;
-    vkDestroyValidationCacheEXT(validationCache->device->handle, validationCache->handle, validationCache->allocator);
+    gpuDestroyValidationCacheEXT(validationCache->device->handle, validationCache->handle, validationCache->allocator);
     gpuDeviceDrop(validationCache->device);
     delete validationCache;
 }

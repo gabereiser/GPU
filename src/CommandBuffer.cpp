@@ -28,7 +28,7 @@ GPU_API VkResult GPU_CALL gpuCommandBufferCreate(
     allocateInfo.commandBufferCount = 1;
 
     VkCommandBuffer handle = VK_NULL_HANDLE;
-    const VkResult result = vkAllocateCommandBuffers(commandPool->device->handle, &allocateInfo, &handle);
+    const VkResult result = gpuAllocateCommandBuffers(commandPool->device->handle, &allocateInfo, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to allocate command buffer.");
         return result;
@@ -43,7 +43,7 @@ GPU_API VkResult GPU_CALL gpuCommandBufferCreate(
         nullptr,
         nullptr};
     if (wrapper == nullptr) {
-        vkFreeCommandBuffers(commandPool->device->handle, commandPool->handle, 1, &handle);
+        gpuFreeCommandBuffers(commandPool->device->handle, commandPool->handle, 1, &handle);
         gpu::internal::setLastError("Failed to allocate CommandBuffer.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -73,7 +73,7 @@ GPU_API void GPU_CALL gpuCommandBufferDestroy(GPUCommandBuffer commandBuffer) {
         commandBuffer->next->previous = commandBuffer->previous;
     }
 
-    vkFreeCommandBuffers(
+    gpuFreeCommandBuffers(
         commandBuffer->deviceHandle,
         commandBuffer->commandPoolHandle,
         1,

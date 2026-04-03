@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuImageCreate(
     *image = nullptr;
 
     VkImage handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateImage(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateImage(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create image.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuImageCreate(
 
     GPUImage wrapper = new (std::nothrow) GPUImage_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyImage(device->handle, handle, allocator);
+        gpuDestroyImage(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Image.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuImageDestroy(GPUImage image) {
         return;
     }
 
-    vkDestroyImage(image->deviceHandle, image->handle, image->allocator);
+    gpuDestroyImage(image->deviceHandle, image->handle, image->allocator);
     delete image;
 }
 

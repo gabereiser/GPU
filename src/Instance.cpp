@@ -23,7 +23,7 @@ void gpuInstanceDrop(GPUInstance instance) {
 
     if (instance->refCount == 0) {
         if (instance->handle != VK_NULL_HANDLE) {
-            vkDestroyInstance(instance->handle, instance->allocator);
+            gpuDestroyInstance(instance->handle, instance->allocator);
         }
         delete instance;
     }
@@ -45,7 +45,7 @@ GPU_API VkResult GPU_CALL gpuInstanceCreate(
     *instance = nullptr;
 
     VkInstance handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateInstance(createInfo, allocator, &handle);
+    const VkResult result = gpuCreateInstance(createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create Vulkan instance.");
         return result;
@@ -53,7 +53,7 @@ GPU_API VkResult GPU_CALL gpuInstanceCreate(
 
     GPUInstance wrapper = new (std::nothrow) GPUInstance_T{handle, allocator, 1, false};
     if (wrapper == nullptr) {
-        vkDestroyInstance(handle, allocator);
+        gpuDestroyInstance(handle, allocator);
         gpu::internal::setLastError("Failed to allocate Instance.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -93,7 +93,7 @@ GPU_API uint32_t GPU_CALL gpuInstanceGetPhysicalDeviceCount(GPUInstance instance
     }
 
     uint32_t count = 0;
-    const VkResult result = vkEnumeratePhysicalDevices(instance->handle, &count, nullptr);
+    const VkResult result = gpuEnumeratePhysicalDevices(instance->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to enumerate physical devices.");
         return 0;
@@ -121,7 +121,7 @@ GPU_API VkResult GPU_CALL gpuInstanceGetPhysicalDevice(
     *physicalDevice = nullptr;
 
     uint32_t count = 0;
-    VkResult result = vkEnumeratePhysicalDevices(instance->handle, &count, nullptr);
+    VkResult result = gpuEnumeratePhysicalDevices(instance->handle, &count, nullptr);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to enumerate physical devices.");
         return result;
@@ -133,7 +133,7 @@ GPU_API VkResult GPU_CALL gpuInstanceGetPhysicalDevice(
     }
 
     std::vector<VkPhysicalDevice> devices(count);
-    result = vkEnumeratePhysicalDevices(instance->handle, &count, devices.data());
+    result = gpuEnumeratePhysicalDevices(instance->handle, &count, devices.data());
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to fetch physical devices.");
         return result;

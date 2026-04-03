@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuOpticalFlowSessionNVCreate(
     *opticalFlowSession = nullptr;
 
     VkOpticalFlowSessionNV handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateOpticalFlowSessionNV(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateOpticalFlowSessionNV(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create optical flow session NV.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuOpticalFlowSessionNVCreate(
     GPUOpticalFlowSessionNV wrapper =
         new (std::nothrow) GPUOpticalFlowSessionNV_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyOpticalFlowSessionNV(device->handle, handle, allocator);
+        gpuDestroyOpticalFlowSessionNV(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate OpticalFlowSessionNV.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuOpticalFlowSessionNVDestroy(GPUOpticalFlowSessionNV opt
     }
 
     opticalFlowSession->destroyRequested = true;
-    vkDestroyOpticalFlowSessionNV(
+    gpuDestroyOpticalFlowSessionNV(
         opticalFlowSession->device->handle,
         opticalFlowSession->handle,
         opticalFlowSession->allocator);

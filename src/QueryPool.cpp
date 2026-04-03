@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuQueryPoolCreate(
     *queryPool = nullptr;
 
     VkQueryPool handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateQueryPool(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateQueryPool(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create query pool.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuQueryPoolCreate(
 
     GPUQueryPool wrapper = new (std::nothrow) GPUQueryPool_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyQueryPool(device->handle, handle, allocator);
+        gpuDestroyQueryPool(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate QueryPool.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuQueryPoolDestroy(GPUQueryPool queryPool) {
         return;
     }
 
-    vkDestroyQueryPool(queryPool->deviceHandle, queryPool->handle, queryPool->allocator);
+    gpuDestroyQueryPool(queryPool->deviceHandle, queryPool->handle, queryPool->allocator);
     delete queryPool;
 }
 

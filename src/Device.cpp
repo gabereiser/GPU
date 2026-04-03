@@ -23,7 +23,7 @@ void gpuDeviceDrop(GPUDevice device) {
 
     if (device->refCount == 0) {
         if (device->handle != VK_NULL_HANDLE) {
-            vkDestroyDevice(device->handle, device->allocator);
+            gpuDestroyDevice(device->handle, device->allocator);
         }
         gpuPhysicalDeviceDrop(device->physicalDevice);
         delete device;
@@ -52,7 +52,7 @@ GPU_API VkResult GPU_CALL gpuDeviceCreate(
     *device = nullptr;
 
     VkDevice handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDevice(physicalDevice->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateDevice(physicalDevice->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create Vulkan device.");
         return result;
@@ -60,7 +60,7 @@ GPU_API VkResult GPU_CALL gpuDeviceCreate(
 
     GPUDevice wrapper = new (std::nothrow) GPUDevice_T{physicalDevice, handle, allocator, 1, false};
     if (wrapper == nullptr) {
-        vkDestroyDevice(handle, allocator);
+        gpuDestroyDevice(handle, allocator);
         gpu::internal::setLastError("Failed to allocate Device.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -112,7 +112,7 @@ GPU_API VkResult GPU_CALL gpuDeviceGetQueue(
     *queue = nullptr;
 
     VkQueue handle = VK_NULL_HANDLE;
-    vkGetDeviceQueue(device->handle, familyIndex, queueIndex, &handle);
+    gpuGetDeviceQueue(device->handle, familyIndex, queueIndex, &handle);
     if (handle == VK_NULL_HANDLE) {
         gpu::internal::setLastError("Failed to get Vulkan queue.");
         return VK_ERROR_INITIALIZATION_FAILED;

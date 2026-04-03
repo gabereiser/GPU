@@ -1,10 +1,13 @@
+#ifndef NDEBUG
 #pragma once
 
 #include "gpu/gpu.h"
 
-struct GPUDebugUtilsMessengerEXT_T {
+struct GPUDebugUtilsMessengerEXT_T
+{
     GPUInstance instance;
     VkDebugUtilsMessengerEXT handle;
-    const VkAllocationCallbacks* allocator;
+    const VkAllocationCallbacks *allocator;
     bool destroyRequested;
 };
+#endif

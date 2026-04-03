@@ -26,7 +26,7 @@ GPU_API VkResult GPU_CALL gpuDeferredOperationKHRCreate(
     *deferredOperation = nullptr;
 
     VkDeferredOperationKHR handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDeferredOperationKHR(device->handle, allocator, &handle);
+    const VkResult result = gpuCreateDeferredOperationKHR(device->handle, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create deferred operation.");
         return result;
@@ -35,7 +35,7 @@ GPU_API VkResult GPU_CALL gpuDeferredOperationKHRCreate(
     GPUDeferredOperationKHR wrapper =
         new (std::nothrow) GPUDeferredOperationKHR_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyDeferredOperationKHR(device->handle, handle, allocator);
+        gpuDestroyDeferredOperationKHR(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DeferredOperationKHR.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -51,7 +51,7 @@ GPU_API void GPU_CALL gpuDeferredOperationKHRDestroy(GPUDeferredOperationKHR def
     }
 
     deferredOperation->destroyRequested = true;
-    vkDestroyDeferredOperationKHR(deferredOperation->device->handle, deferredOperation->handle, deferredOperation->allocator);
+    gpuDestroyDeferredOperationKHR(deferredOperation->device->handle, deferredOperation->handle, deferredOperation->allocator);
     gpuDeviceDrop(deferredOperation->device);
     delete deferredOperation;
 }

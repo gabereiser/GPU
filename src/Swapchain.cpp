@@ -23,7 +23,7 @@ void gpuSwapchainDrop(GPUSwapchain swapchain) {
 
     if (swapchain->refCount == 0) {
         if (swapchain->handle != VK_NULL_HANDLE) {
-            vkDestroySwapchainKHR(swapchain->device->handle, swapchain->handle, swapchain->allocator);
+            gpuDestroySwapchainKHR(swapchain->device->handle, swapchain->handle, swapchain->allocator);
         }
         gpuDeviceDrop(swapchain->device);
         gpuSurfaceDrop(swapchain->surface);
@@ -54,7 +54,7 @@ GPU_API VkResult GPU_CALL gpuSwapchainCreate(
     *swapchain = nullptr;
 
     VkSwapchainKHR handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateSwapchainKHR(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateSwapchainKHR(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create Vulkan swapchain.");
         return result;
@@ -62,7 +62,7 @@ GPU_API VkResult GPU_CALL gpuSwapchainCreate(
 
     GPUSwapchain wrapper = new (std::nothrow) GPUSwapchain_T{device, surface, handle, allocator, 1, false};
     if (wrapper == nullptr) {
-        vkDestroySwapchainKHR(device->handle, handle, allocator);
+        gpuDestroySwapchainKHR(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Swapchain.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }

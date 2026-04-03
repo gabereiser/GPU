@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuShaderEXTCreate(
     *shader = nullptr;
 
     VkShaderEXT handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateShadersEXT(device->handle, 1, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateShadersEXT(device->handle, 1, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create shader EXT.");
         return result;
@@ -35,7 +35,7 @@ GPU_API VkResult GPU_CALL gpuShaderEXTCreate(
 
     GPUShaderEXT wrapper = new (std::nothrow) GPUShaderEXT_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyShaderEXT(device->handle, handle, allocator);
+        gpuDestroyShaderEXT(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate ShaderEXT.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -51,7 +51,7 @@ GPU_API void GPU_CALL gpuShaderEXTDestroy(GPUShaderEXT shader) {
     }
 
     shader->destroyRequested = true;
-    vkDestroyShaderEXT(shader->device->handle, shader->handle, shader->allocator);
+    gpuDestroyShaderEXT(shader->device->handle, shader->handle, shader->allocator);
     gpuDeviceDrop(shader->device);
     delete shader;
 }

@@ -25,7 +25,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCreateGraphics(
 
     VkPipeline handle = VK_NULL_HANDLE;
     const VkPipelineCache cacheHandle = pipelineCache != nullptr ? pipelineCache->handle : VK_NULL_HANDLE;
-    const VkResult result = vkCreateGraphicsPipelines(
+    const VkResult result = gpuCreateGraphicsPipelines(
         device->handle,
         cacheHandle,
         1,
@@ -39,7 +39,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCreateGraphics(
 
     GPUPipeline wrapper = new (std::nothrow) GPUPipeline_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyPipeline(device->handle, handle, allocator);
+        gpuDestroyPipeline(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Pipeline.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -65,7 +65,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCreateCompute(
 
     VkPipeline handle = VK_NULL_HANDLE;
     const VkPipelineCache cacheHandle = pipelineCache != nullptr ? pipelineCache->handle : VK_NULL_HANDLE;
-    const VkResult result = vkCreateComputePipelines(
+    const VkResult result = gpuCreateComputePipelines(
         device->handle,
         cacheHandle,
         1,
@@ -79,7 +79,7 @@ GPU_API VkResult GPU_CALL gpuPipelineCreateCompute(
 
     GPUPipeline wrapper = new (std::nothrow) GPUPipeline_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyPipeline(device->handle, handle, allocator);
+        gpuDestroyPipeline(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Pipeline.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -93,7 +93,7 @@ GPU_API void GPU_CALL gpuPipelineDestroy(GPUPipeline pipeline) {
         return;
     }
 
-    vkDestroyPipeline(pipeline->device->handle, pipeline->handle, pipeline->allocator);
+    gpuDestroyPipeline(pipeline->device->handle, pipeline->handle, pipeline->allocator);
     delete pipeline;
 }
 

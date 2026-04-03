@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuRenderPassCreate(
     *renderPass = nullptr;
 
     VkRenderPass handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateRenderPass(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateRenderPass(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create render pass.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuRenderPassCreate(
 
     GPURenderPass wrapper = new (std::nothrow) GPURenderPass_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyRenderPass(device->handle, handle, allocator);
+        gpuDestroyRenderPass(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate RenderPass.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuRenderPassDestroy(GPURenderPass renderPass) {
         return;
     }
 
-    vkDestroyRenderPass(renderPass->device->handle, renderPass->handle, renderPass->allocator);
+    gpuDestroyRenderPass(renderPass->device->handle, renderPass->handle, renderPass->allocator);
     delete renderPass;
 }
 

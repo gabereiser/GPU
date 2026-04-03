@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuPrivateDataSlotCreate(
     *privateDataSlot = nullptr;
 
     VkPrivateDataSlot handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreatePrivateDataSlot(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreatePrivateDataSlot(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create private data slot.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuPrivateDataSlotCreate(
 
     GPUPrivateDataSlot wrapper = new (std::nothrow) GPUPrivateDataSlot_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyPrivateDataSlot(device->handle, handle, allocator);
+        gpuDestroyPrivateDataSlot(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate PrivateDataSlot.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuPrivateDataSlotDestroy(GPUPrivateDataSlot privateDataSl
         return;
     }
 
-    vkDestroyPrivateDataSlot(
+    gpuDestroyPrivateDataSlot(
         privateDataSlot->device->handle,
         privateDataSlot->handle,
         privateDataSlot->allocator);

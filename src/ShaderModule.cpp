@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuShaderModuleCreate(
     *shaderModule = nullptr;
 
     VkShaderModule handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateShaderModule(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateShaderModule(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create shader module.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuShaderModuleCreate(
 
     GPUShaderModule wrapper = new (std::nothrow) GPUShaderModule_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyShaderModule(device->handle, handle, allocator);
+        gpuDestroyShaderModule(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate ShaderModule.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuShaderModuleDestroy(GPUShaderModule shaderModule) {
         return;
     }
 
-    vkDestroyShaderModule(shaderModule->device->handle, shaderModule->handle, shaderModule->allocator);
+    gpuDestroyShaderModule(shaderModule->device->handle, shaderModule->handle, shaderModule->allocator);
     delete shaderModule;
 }
 

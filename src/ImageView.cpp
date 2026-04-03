@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuImageViewCreate(
     *imageView = nullptr;
 
     VkImageView handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateImageView(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateImageView(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create image view.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuImageViewCreate(
 
     GPUImageView wrapper = new (std::nothrow) GPUImageView_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyImageView(device->handle, handle, allocator);
+        gpuDestroyImageView(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate ImageView.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuImageViewDestroy(GPUImageView imageView) {
         return;
     }
 
-    vkDestroyImageView(imageView->deviceHandle, imageView->handle, imageView->allocator);
+    gpuDestroyImageView(imageView->deviceHandle, imageView->handle, imageView->allocator);
     delete imageView;
 }
 

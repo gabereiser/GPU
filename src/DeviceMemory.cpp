@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuDeviceMemoryCreate(
     *memory = nullptr;
 
     VkDeviceMemory handle = VK_NULL_HANDLE;
-    const VkResult result = vkAllocateMemory(device->handle, allocateInfo, allocator, &handle);
+    const VkResult result = gpuAllocateMemory(device->handle, allocateInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to allocate device memory.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuDeviceMemoryCreate(
 
     GPUDeviceMemory wrapper = new (std::nothrow) GPUDeviceMemory_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkFreeMemory(device->handle, handle, allocator);
+        gpuFreeMemory(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DeviceMemory.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuDeviceMemoryDestroy(GPUDeviceMemory memory) {
         return;
     }
 
-    vkFreeMemory(memory->deviceHandle, memory->handle, memory->allocator);
+    gpuFreeMemory(memory->deviceHandle, memory->handle, memory->allocator);
     delete memory;
 }
 

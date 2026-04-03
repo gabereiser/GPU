@@ -31,7 +31,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorSetAllocate(
     request.descriptorSetCount = 1;
 
     VkDescriptorSet handle = VK_NULL_HANDLE;
-    const VkResult result = vkAllocateDescriptorSets(
+    const VkResult result = gpuAllocateDescriptorSets(
         descriptorPool->device->handle,
         &request,
         &handle);
@@ -42,7 +42,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorSetAllocate(
 
     GPUDescriptorSet wrapper = new (std::nothrow) GPUDescriptorSet_T{descriptorPool, handle};
     if (wrapper == nullptr) {
-        vkFreeDescriptorSets(descriptorPool->device->handle, descriptorPool->handle, 1, &handle);
+        gpuFreeDescriptorSets(descriptorPool->device->handle, descriptorPool->handle, 1, &handle);
         gpu::internal::setLastError("Failed to allocate DescriptorSet.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -57,7 +57,7 @@ GPU_API void GPU_CALL gpuDescriptorSetDestroy(GPUDescriptorSet descriptorSet) {
     }
 
     if (descriptorSet->pool != nullptr) {
-        vkFreeDescriptorSets(
+        gpuFreeDescriptorSets(
             descriptorSet->pool->device->handle,
             descriptorSet->pool->handle,
             1,

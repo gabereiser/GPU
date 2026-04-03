@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuCuFunctionNVXCreate(
     *cuFunction = nullptr;
 
     VkCuFunctionNVX handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateCuFunctionNVX(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateCuFunctionNVX(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create CUDA function NVX.");
         return result;
@@ -35,7 +35,7 @@ GPU_API VkResult GPU_CALL gpuCuFunctionNVXCreate(
 
     GPUCuFunctionNVX wrapper = new (std::nothrow) GPUCuFunctionNVX_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyCuFunctionNVX(device->handle, handle, allocator);
+        gpuDestroyCuFunctionNVX(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate CuFunctionNVX.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -51,7 +51,7 @@ GPU_API void GPU_CALL gpuCuFunctionNVXDestroy(GPUCuFunctionNVX cuFunction) {
     }
 
     cuFunction->destroyRequested = true;
-    vkDestroyCuFunctionNVX(cuFunction->device->handle, cuFunction->handle, cuFunction->allocator);
+    gpuDestroyCuFunctionNVX(cuFunction->device->handle, cuFunction->handle, cuFunction->allocator);
     gpuDeviceDrop(cuFunction->device);
     delete cuFunction;
 }

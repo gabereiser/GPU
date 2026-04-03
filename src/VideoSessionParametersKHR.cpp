@@ -28,7 +28,7 @@ GPU_API VkResult GPU_CALL gpuVideoSessionParametersKHRCreate(
 
     VkVideoSessionParametersKHR handle = VK_NULL_HANDLE;
     const VkResult result =
-        vkCreateVideoSessionParametersKHR(device->handle, createInfo, allocator, &handle);
+        gpuCreateVideoSessionParametersKHR(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create video session parameters KHR.");
         return result;
@@ -37,7 +37,7 @@ GPU_API VkResult GPU_CALL gpuVideoSessionParametersKHRCreate(
     GPUVideoSessionParametersKHR wrapper =
         new (std::nothrow) GPUVideoSessionParametersKHR_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyVideoSessionParametersKHR(device->handle, handle, allocator);
+        gpuDestroyVideoSessionParametersKHR(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate VideoSessionParametersKHR.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -53,7 +53,7 @@ GPU_API void GPU_CALL gpuVideoSessionParametersKHRDestroy(GPUVideoSessionParamet
     }
 
     videoSessionParameters->destroyRequested = true;
-    vkDestroyVideoSessionParametersKHR(
+    gpuDestroyVideoSessionParametersKHR(
         videoSessionParameters->device->handle,
         videoSessionParameters->handle,
         videoSessionParameters->allocator);

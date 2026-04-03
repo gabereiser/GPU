@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuSamplerYcbcrConversionCreate(
     *samplerYcbcrConversion = nullptr;
 
     VkSamplerYcbcrConversion handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateSamplerYcbcrConversion(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateSamplerYcbcrConversion(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create sampler YCbCr conversion.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuSamplerYcbcrConversionCreate(
 
     GPUSamplerYcbcrConversion wrapper = new (std::nothrow) GPUSamplerYcbcrConversion_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroySamplerYcbcrConversion(device->handle, handle, allocator);
+        gpuDestroySamplerYcbcrConversion(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate SamplerYcbcrConversion.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuSamplerYcbcrConversionDestroy(GPUSamplerYcbcrConversion
         return;
     }
 
-    vkDestroySamplerYcbcrConversion(
+    gpuDestroySamplerYcbcrConversion(
         samplerYcbcrConversion->device->handle,
         samplerYcbcrConversion->handle,
         samplerYcbcrConversion->allocator);

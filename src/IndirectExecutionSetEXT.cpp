@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuIndirectExecutionSetEXTCreate(
     *indirectExecutionSet = nullptr;
 
     VkIndirectExecutionSetEXT handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateIndirectExecutionSetEXT(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateIndirectExecutionSetEXT(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create indirect execution set EXT.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuIndirectExecutionSetEXTCreate(
     GPUIndirectExecutionSetEXT wrapper =
         new (std::nothrow) GPUIndirectExecutionSetEXT_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyIndirectExecutionSetEXT(device->handle, handle, allocator);
+        gpuDestroyIndirectExecutionSetEXT(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate IndirectExecutionSetEXT.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuIndirectExecutionSetEXTDestroy(GPUIndirectExecutionSetE
     }
 
     indirectExecutionSet->destroyRequested = true;
-    vkDestroyIndirectExecutionSetEXT(indirectExecutionSet->device->handle, indirectExecutionSet->handle, indirectExecutionSet->allocator);
+    gpuDestroyIndirectExecutionSetEXT(indirectExecutionSet->device->handle, indirectExecutionSet->handle, indirectExecutionSet->allocator);
     gpuDeviceDrop(indirectExecutionSet->device);
     delete indirectExecutionSet;
 }

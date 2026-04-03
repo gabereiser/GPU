@@ -23,14 +23,14 @@ GPU_API VkResult GPU_CALL gpuMicromapEXTCreate(
     }
     *micromap = nullptr;
     VkMicromapEXT handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateMicromapEXT(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateMicromapEXT(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create micromap EXT.");
         return result;
     }
     GPUMicromapEXT wrapper = new (std::nothrow) GPUMicromapEXT_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyMicromapEXT(device->handle, handle, allocator);
+        gpuDestroyMicromapEXT(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate MicromapEXT.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuMicromapEXTDestroy(GPUMicromapEXT micromap) {
         return;
     }
     micromap->destroyRequested = true;
-    vkDestroyMicromapEXT(micromap->device->handle, micromap->handle, micromap->allocator);
+    gpuDestroyMicromapEXT(micromap->device->handle, micromap->handle, micromap->allocator);
     gpuDeviceDrop(micromap->device);
     delete micromap;
 }

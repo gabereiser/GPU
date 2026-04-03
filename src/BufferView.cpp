@@ -23,7 +23,7 @@ GPU_API VkResult GPU_CALL gpuBufferViewCreate(
     *bufferView = nullptr;
 
     VkBufferView handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateBufferView(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateBufferView(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create buffer view.");
         return result;
@@ -31,7 +31,7 @@ GPU_API VkResult GPU_CALL gpuBufferViewCreate(
 
     GPUBufferView wrapper = new (std::nothrow) GPUBufferView_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyBufferView(device->handle, handle, allocator);
+        gpuDestroyBufferView(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate BufferView.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -45,7 +45,7 @@ GPU_API void GPU_CALL gpuBufferViewDestroy(GPUBufferView bufferView) {
         return;
     }
 
-    vkDestroyBufferView(bufferView->deviceHandle, bufferView->handle, bufferView->allocator);
+    gpuDestroyBufferView(bufferView->deviceHandle, bufferView->handle, bufferView->allocator);
     delete bufferView;
 }
 

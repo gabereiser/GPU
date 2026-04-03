@@ -32,7 +32,7 @@ GPU_API VkResult GPU_CALL gpuPipelineBinaryKHRCreate(
     handlesInfo.pipelineBinaryCount = 1;
     handlesInfo.pPipelineBinaries = &handle;
 
-    const VkResult result = vkCreatePipelineBinariesKHR(device->handle, createInfo, allocator, &handlesInfo);
+    const VkResult result = gpuCreatePipelineBinariesKHR(device->handle, createInfo, allocator, &handlesInfo);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create pipeline binary KHR.");
         return result;
@@ -41,7 +41,7 @@ GPU_API VkResult GPU_CALL gpuPipelineBinaryKHRCreate(
     GPUPipelineBinaryKHR wrapper =
         new (std::nothrow) GPUPipelineBinaryKHR_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyPipelineBinaryKHR(device->handle, handle, allocator);
+        gpuDestroyPipelineBinaryKHR(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate PipelineBinaryKHR.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -57,7 +57,7 @@ GPU_API void GPU_CALL gpuPipelineBinaryKHRDestroy(GPUPipelineBinaryKHR pipelineB
     }
 
     pipelineBinary->destroyRequested = true;
-    vkDestroyPipelineBinaryKHR(pipelineBinary->device->handle, pipelineBinary->handle, pipelineBinary->allocator);
+    gpuDestroyPipelineBinaryKHR(pipelineBinary->device->handle, pipelineBinary->handle, pipelineBinary->allocator);
     gpuDeviceDrop(pipelineBinary->device);
     delete pipelineBinary;
 }

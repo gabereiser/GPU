@@ -1,88 +1,87 @@
 # GPU
 
-`GPU` is a Vulkan-shaped native GPU ABI with a safe-shaped managed wrapper layer.
+`GPU` is a native Vulkan wrapper library with a matching .NET layer.
 
-It exists to solve one specific problem cleanly:
+The goal is simple: keep the API close to Vulkan, keep ownership rules explicit, and make the library usable from C# without inventing a new rendering model.
 
-- native code owns the low-level GPU boundary
-- managed code gets a predictable, high-performance interop surface
-- both sides stay close to Vulkan instead of inventing a new rendering model
+## What This Repo Contains
 
-## What It Is
+- A native C ABI for Vulkan-oriented work
+- A broad object wrapper layer for Vulkan handles and lifetimes
+- A generated Vulkan command surface in [gpu_vulkan.h](include/gpu/gpu_vulkan.h)
+- A managed .NET wrapper in [Managed/GPU.Managed.csproj](Managed/GPU.Managed.csproj)
 
-`GPU` is not a renderer, scene graph, or engine framework.
+This project is not a renderer, engine, or scene framework. It is a low-level foundation for people who want a stable native boundary and a usable managed interop layer.
 
-It is:
+## Design Goals
 
-- a C ABI for Vulkan-oriented GPU work
-- a broad object/lifecycle surface that mirrors Vulkan handles and ownership patterns
-- a small amount of GLFW/Vulkan bootstrap glue where that reduces interop friction
-- a managed `GPU` wrapper for .NET that keeps the public surface usable from safe C#
+- Stay close to Vulkan terminology and behavior
+- Keep native ownership and destruction rules explicit
+- Expose a thin managed layer instead of a second object model
+- Cover the full Vulkan surface so platform-specific use cases remain possible
+- Leave extension selection, feature negotiation, and environment setup to the application
 
-The design target is simple:
+That last point is important: this library exposes Vulkan, but it does not decide which extensions your application should enable. That responsibility belongs to the developer building the app for a specific machine, OS, driver, and device.
 
-- object and handle families are exposed as `GPUFoo` natively and `GPU.Foo` in managed code
-- Vulkan structs, enums, flags, and result codes stay Vulkan-shaped where the ABI still passes Vulkan data directly
+## Who This Is For
 
-## What It Does
+`GPU` is a good fit if you want:
 
-The native layer provides:
+- a native Vulkan seam for a .NET application
+- a C ABI that is easy to bind
+- a managed API that stays close to Vulkan concepts
+- explicit control over GPU setup rather than a high-level abstraction
 
-- instances
-- physical devices
-- devices and queues
-- surfaces and swapchains
-- memory, buffers, images, and image views
-- command pools and command buffers
-- synchronization objects
-- pipelines, shader modules, render passes, framebuffers, and descriptors
-- extension and specialized object families carried across the same ABI surface
-- the generated raw Vulkan command ABI in [gpu_vulkan.h](/C:/Users/gabe/projects/GPU/include/gpu/gpu_vulkan.h)
+## Project Layout
 
-The managed layer provides:
+- Public native API: [include/gpu/gpu.h](include/gpu/gpu.h)
+- Generated Vulkan ABI surface: [include/gpu/gpu_vulkan.h](include/gpu/gpu_vulkan.h)
+- Native implementation: [src](src)
+- Managed wrapper: [Managed](Managed)
+- Validation notes: [VALIDATION.md](VALIDATION.md)
 
-- process-wide native library loading
-- cached unmanaged function pointers
-- disposable proxy objects over native opaque handles
-- safe-shaped public entrypoints for consumers
-- a managed API that stays close to the native ABI instead of hiding it
+## Building
 
-## Why It Exists
+You can build the project with any of the helper scripts in the repo root.
 
-Large managed systems still need a disciplined native GPU seam.
+### Bash
 
-This repo exists so that:
+```bash
+./build.sh
+./build.sh Debug
+```
 
-- engine code can stay in C#
-- the Vulkan boundary can still be owned explicitly
-- the interop contract can stay stable and low-level
-- developers can reason about the GPU side using familiar Vulkan concepts
-- the same seam can be useful for games, scientific tools, government systems, education, and other high-performance .NET workloads
+### Command Prompt
 
-The core idea is not "replace Vulkan."
+```bat
+build.bat
+build.bat Debug
+```
 
-The core idea is:
+### PowerShell
 
-give Vulkan a clean native home, then let managed code meet it through a thin, trustworthy boundary.
+```powershell
+.\build.ps1
+.\build.ps1 Debug
+```
 
-## Design Principles
+All three support the same configurations:
 
-- `GPU` should feel like Vulkan with the object-facing `Vk` prefix removed.
-- The native layer should be thin, systematic, and unsurprising.
-- The managed layer should be a proxy layer, not a competing object model.
-- Object names and file layout should stay validation-friendly and easy to audit.
-- Platform details belong to the consumer and the target build, not to the core ABI shape.
+- `Debug`
+- `Release`
+- `RelWithDebInfo`
+- `MinSizeRel`
 
-## Layering
+If you want to run CMake directly:
 
-- Native `GPU` library:
-  broad Vulkan-facing C ABI plus a small set of bootstrap fixtures
-- Managed `GPU` wrapper:
-  delegate loading, safe public entrypoints, and disposable proxy objects for .NET
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+```
 
-## Example: C++
+## Native Usage Example
 
-This is the native style: explicit create info, explicit lifetime, explicit object graph.
+The native API keeps Vulkan setup explicit.
 
 ```cpp
 #include <gpu/gpu.h>
@@ -156,12 +155,9 @@ int main() {
 }
 ```
 
-## Example: C#
+## Managed Usage Example
 
-This is the managed style: same object graph, same Vulkan-shaped structs, but a safe public GPU API.
-
-Assumption:
-your application provides Vulkan struct definitions from your own bindings or generated interop types.
+The managed layer follows the same object graph, but exposes disposable wrappers for C#.
 
 ```csharp
 using GPU;
@@ -183,34 +179,19 @@ public static class Sample
 }
 ```
 
-If you need to prepare UTF-8 strings or unmanaged arrays for Vulkan structures, the managed layer also includes helpers in [GpuMarshal.cs](/C:/Users/gabe/projects/GPU/Managed/GpuMarshal.cs).
+If you need to build UTF-8 strings or unmanaged arrays for Vulkan structs, see [Managed/GpuMarshal.cs](Managed/GpuMarshal.cs).
 
-Notes:
+## Runtime Expectations
 
-- the managed public API is safe-shaped, but Vulkan struct construction is still explicit by design
-- the managed layer keeps low-level interop details inside the library
-- object disposal is deterministic through `IDisposable`
+- The library exposes Vulkan functionality, including extension-heavy paths.
+- Your application is responsible for enabling the correct instance and device extensions.
+- Your application is also responsible for choosing the right platform-specific Vulkan features for the target environment.
+- If code calls a Vulkan command that is not actually available through the loader, the library now fails loudly instead of silently continuing.
 
-## Who This Is For
-
-This project is a good fit when you want:
-
-- a native GPU seam for a managed engine
-- Vulkan-shaped behavior without a giant abstraction layer
-- a C ABI that is easy to bind from C#
-- a foundation layer other systems can build on
-
-## Repo Highlights
-
-- Native ABI header: [gpu.h](/C:/Users/gabe/projects/GPU/include/gpu/gpu.h)
-- Generated raw Vulkan ABI layer: [gpu_vulkan.h](/C:/Users/gabe/projects/GPU/include/gpu/gpu_vulkan.h)
-- Managed wrapper project: [GPU.Managed.csproj](/C:/Users/gabe/projects/GPU/Managed/GPU.Managed.csproj)
-- Validation contract: [VALIDATION.md](/C:/Users/gabe/projects/GPU/VALIDATION.md)
+That behavior is intentional. This library helps with interop and lifetime management, but it does not try to guess the correct Vulkan configuration for the end user.
 
 ## Status
 
-The object/lifecycle wrapper surface is aligned with the validation contract in [VALIDATION.md](/C:/Users/gabe/projects/GPU/VALIDATION.md), and the managed wrapper builds successfully as [GPU.Managed.dll](/C:/Users/gabe/projects/GPU/Managed/bin/Debug/net8.0/GPU.Managed.dll).
+The native wrapper layer, generated Vulkan ABI layer, and managed wrapper all build successfully in this repo.
 
-This is foundational infrastructure:
-
-plain ABI, Vulkan shape, managed reach.
+For managed-layer notes, see [Managed/README.md](Managed/README.md).

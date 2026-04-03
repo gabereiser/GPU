@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuDataGraphPipelineSessionARMCreate(
     *session = nullptr;
 
     VkDataGraphPipelineSessionARM handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDataGraphPipelineSessionARM(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateDataGraphPipelineSessionARM(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create data graph pipeline session ARM.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuDataGraphPipelineSessionARMCreate(
     GPUDataGraphPipelineSessionARM wrapper =
         new (std::nothrow) GPUDataGraphPipelineSessionARM_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyDataGraphPipelineSessionARM(device->handle, handle, allocator);
+        gpuDestroyDataGraphPipelineSessionARM(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DataGraphPipelineSessionARM.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuDataGraphPipelineSessionARMDestroy(GPUDataGraphPipeline
     }
 
     session->destroyRequested = true;
-    vkDestroyDataGraphPipelineSessionARM(session->device->handle, session->handle, session->allocator);
+    gpuDestroyDataGraphPipelineSessionARM(session->device->handle, session->handle, session->allocator);
     gpuDeviceDrop(session->device);
     delete session;
 }

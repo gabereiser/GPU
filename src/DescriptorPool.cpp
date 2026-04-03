@@ -22,7 +22,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorPoolCreate(
     *descriptorPool = nullptr;
 
     VkDescriptorPool handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateDescriptorPool(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateDescriptorPool(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create descriptor pool.");
         return result;
@@ -30,7 +30,7 @@ GPU_API VkResult GPU_CALL gpuDescriptorPoolCreate(
 
     GPUDescriptorPool wrapper = new (std::nothrow) GPUDescriptorPool_T{device, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyDescriptorPool(device->handle, handle, allocator);
+        gpuDestroyDescriptorPool(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate DescriptorPool.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -44,7 +44,7 @@ GPU_API void GPU_CALL gpuDescriptorPoolDestroy(GPUDescriptorPool descriptorPool)
         return;
     }
 
-    vkDestroyDescriptorPool(
+    gpuDestroyDescriptorPool(
         descriptorPool->device->handle,
         descriptorPool->handle,
         descriptorPool->allocator);

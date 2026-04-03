@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuIndirectCommandsLayoutNVCreate(
     *indirectCommandsLayout = nullptr;
 
     VkIndirectCommandsLayoutNV handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateIndirectCommandsLayoutNV(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateIndirectCommandsLayoutNV(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create indirect commands layout NV.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuIndirectCommandsLayoutNVCreate(
     GPUIndirectCommandsLayoutNV wrapper =
         new (std::nothrow) GPUIndirectCommandsLayoutNV_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyIndirectCommandsLayoutNV(device->handle, handle, allocator);
+        gpuDestroyIndirectCommandsLayoutNV(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate IndirectCommandsLayoutNV.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuIndirectCommandsLayoutNVDestroy(GPUIndirectCommandsLayo
     }
 
     indirectCommandsLayout->destroyRequested = true;
-    vkDestroyIndirectCommandsLayoutNV(indirectCommandsLayout->device->handle, indirectCommandsLayout->handle, indirectCommandsLayout->allocator);
+    gpuDestroyIndirectCommandsLayoutNV(indirectCommandsLayout->device->handle, indirectCommandsLayout->handle, indirectCommandsLayout->allocator);
     gpuDeviceDrop(indirectCommandsLayout->device);
     delete indirectCommandsLayout;
 }

@@ -27,7 +27,7 @@ GPU_API VkResult GPU_CALL gpuExternalComputeQueueNVCreate(
     *externalQueue = nullptr;
 
     VkExternalComputeQueueNV handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateExternalComputeQueueNV(device->handle, createInfo, allocator, &handle);
+    const VkResult result = gpuCreateExternalComputeQueueNV(device->handle, createInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create external compute queue NV.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuExternalComputeQueueNVCreate(
     GPUExternalComputeQueueNV wrapper =
         new (std::nothrow) GPUExternalComputeQueueNV_T{device, handle, allocator, false};
     if (wrapper == nullptr) {
-        vkDestroyExternalComputeQueueNV(device->handle, handle, allocator);
+        gpuDestroyExternalComputeQueueNV(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate ExternalComputeQueueNV.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -52,7 +52,7 @@ GPU_API void GPU_CALL gpuExternalComputeQueueNVDestroy(GPUExternalComputeQueueNV
     }
 
     externalQueue->destroyRequested = true;
-    vkDestroyExternalComputeQueueNV(externalQueue->device->handle, externalQueue->handle, externalQueue->allocator);
+    gpuDestroyExternalComputeQueueNV(externalQueue->device->handle, externalQueue->handle, externalQueue->allocator);
     gpuDeviceDrop(externalQueue->device);
     delete externalQueue;
 }

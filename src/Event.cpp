@@ -28,7 +28,7 @@ GPU_API VkResult GPU_CALL gpuEventCreate(
     const VkEventCreateInfo* actualCreateInfo = createInfo != nullptr ? createInfo : &defaultCreateInfo;
 
     VkEvent handle = VK_NULL_HANDLE;
-    const VkResult result = vkCreateEvent(device->handle, actualCreateInfo, allocator, &handle);
+    const VkResult result = gpuCreateEvent(device->handle, actualCreateInfo, allocator, &handle);
     if (result != VK_SUCCESS) {
         gpu::internal::setLastError("Failed to create event.");
         return result;
@@ -36,7 +36,7 @@ GPU_API VkResult GPU_CALL gpuEventCreate(
 
     GPUEvent wrapper = new (std::nothrow) GPUEvent_T{device, device->handle, handle, allocator};
     if (wrapper == nullptr) {
-        vkDestroyEvent(device->handle, handle, allocator);
+        gpuDestroyEvent(device->handle, handle, allocator);
         gpu::internal::setLastError("Failed to allocate Event.");
         return VK_ERROR_OUT_OF_HOST_MEMORY;
     }
@@ -50,7 +50,7 @@ GPU_API void GPU_CALL gpuEventDestroy(GPUEvent event) {
         return;
     }
 
-    vkDestroyEvent(event->deviceHandle, event->handle, event->allocator);
+    gpuDestroyEvent(event->deviceHandle, event->handle, event->allocator);
     delete event;
 }
 
