@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUValidationCacheEXT_T {
+struct GPUValidationCacheEXT_T
+{
     GPUDevice device;
     VkValidationCacheEXT handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

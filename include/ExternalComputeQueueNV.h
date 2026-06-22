@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUExternalComputeQueueNV_T {
+struct GPUExternalComputeQueueNV_T
+{
     GPUDevice device;
     VkExternalComputeQueueNV handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUOpticalFlowSessionNV_T {
+struct GPUOpticalFlowSessionNV_T
+{
     GPUDevice device;
     VkOpticalFlowSessionNV handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

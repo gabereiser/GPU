@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUDescriptorSetLayout_T {
+struct GPUDescriptorSetLayout_T
+{
     GPUDevice device;
     VkDescriptorSetLayout handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

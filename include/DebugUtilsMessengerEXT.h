@@ -7,7 +7,7 @@ struct GPUDebugUtilsMessengerEXT_T
 {
     GPUInstance instance;
     VkDebugUtilsMessengerEXT handle;
-    const VkAllocationCallbacks *allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };
 #endif

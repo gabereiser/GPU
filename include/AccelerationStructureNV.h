@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUAccelerationStructureNV_T {
+struct GPUAccelerationStructureNV_T
+{
     GPUDevice device;
     VkAccelerationStructureNV handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

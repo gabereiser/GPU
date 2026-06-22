@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUDeferredOperationKHR_T {
+struct GPUDeferredOperationKHR_T
+{
     GPUDevice device;
     VkDeferredOperationKHR handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

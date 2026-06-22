@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUPrivateDataSlot_T {
+struct GPUPrivateDataSlot_T
+{
     GPUDevice device;
     VkPrivateDataSlot handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

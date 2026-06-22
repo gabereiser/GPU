@@ -2,12 +2,13 @@
 
 #include "gpu/gpu.h"
 
-struct GPUCommandBuffer_T {
+struct GPUCommandBuffer_T
+{
     GPUCommandPool commandPool;
-    VkDevice deviceHandle;
+    GPUDevice deviceHandle;
     VkCommandPool commandPoolHandle;
     VkCommandBuffer handle;
-    VkCommandBufferLevel level;
+    GpuCommandBufferLevel level;
     GPUCommandBuffer next;
     GPUCommandBuffer previous;
 };

@@ -2,9 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUImageView_T {
+struct GPUImageView_T
+{
     GPUDevice device;
-    VkDevice deviceHandle;
     VkImageView handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

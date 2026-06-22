@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPURenderPass_T {
+struct GPURenderPass_T
+{
     GPUDevice device;
     VkRenderPass handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

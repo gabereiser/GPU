@@ -19,15 +19,7 @@ add_subdirectory(dependencies/glslang)
 
 
 
-set(GPU_GENERATOR ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_vulkan_abi.py)
-set(VK_XML ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Vulkan-Headers/registry/vk.xml)
-set(GPU_GENERATED_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/gpu/gpu_vulkan.h)
-set(GPU_GENERATED_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/Vulkan.cpp)
 
-
-add_custom_target(generate_gpu_vulkan_abi
-    DEPENDS ${GPU_GENERATED_HEADER} ${GPU_GENERATED_SOURCE}
-)
 
 add_library(${PROJECT_NAME} SHARED
     src/GPU.cpp
@@ -91,12 +83,9 @@ add_library(${PROJECT_NAME} SHARED
     src/CudaModuleNV.cpp
     src/CudaFunctionNV.cpp
     src/ExternalComputeQueueNV.cpp
-    ${GPU_GENERATED_SOURCE}
     src/Surface.cpp
 
 )
-
-add_dependencies(${PROJECT_NAME} generate_gpu_vulkan_abi)
 
 target_sources(${PROJECT_NAME} PRIVATE src/ShaderCompiler/ShaderCompiler.cpp
     dependencies/glslang/glslang/ResourceLimits/ResourceLimits.cpp

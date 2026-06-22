@@ -2,9 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUEvent_T {
+struct GPUEvent_T
+{
     GPUDevice device;
-    VkDevice deviceHandle;
     VkEvent handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

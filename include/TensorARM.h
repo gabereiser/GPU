@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUTensorARM_T {
+struct GPUTensorARM_T
+{
     GPUDevice device;
     VkTensorARM handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

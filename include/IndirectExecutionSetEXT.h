@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUIndirectExecutionSetEXT_T {
+struct GPUIndirectExecutionSetEXT_T
+{
     GPUDevice device;
     VkIndirectExecutionSetEXT handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

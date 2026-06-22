@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUShaderModule_T {
+struct GPUShaderModule_T
+{
     GPUDevice device;
     VkShaderModule handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

@@ -2,10 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUCommandPool_T {
+struct GPUCommandPool_T
+{
     GPUDevice device;
-    VkDevice deviceHandle;
     VkCommandPool handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     GPUCommandBuffer firstCommandBuffer;
 };

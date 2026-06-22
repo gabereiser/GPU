@@ -6,7 +6,7 @@ struct GPUCudaFunctionNV_T
 {
     GPUDevice device;
     VkCudaFunctionNV handle;
-    const VkAllocationCallbacks *allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };
 #endif

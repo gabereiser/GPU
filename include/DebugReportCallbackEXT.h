@@ -6,7 +6,7 @@ struct GPUDebugReportCallbackEXT_T
 {
     GPUInstance instance;
     VkDebugReportCallbackEXT handle;
-    const VkAllocationCallbacks *allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };
 #endif

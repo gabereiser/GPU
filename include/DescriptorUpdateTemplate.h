@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUDescriptorUpdateTemplate_T {
+struct GPUDescriptorUpdateTemplate_T
+{
     GPUDevice device;
     VkDescriptorUpdateTemplate handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUPipelineBinaryKHR_T {
+struct GPUPipelineBinaryKHR_T
+{
     GPUDevice device;
     VkPipelineBinaryKHR handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

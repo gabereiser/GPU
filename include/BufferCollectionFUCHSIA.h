@@ -6,7 +6,7 @@ struct GPUBufferCollectionFUCHSIA_T
 {
     GPUDevice device;
     VkBufferCollectionFUCHSIA handle;
-    const VkAllocationCallbacks *allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };
 #endif

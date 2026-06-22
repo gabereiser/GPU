@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUAccelerationStructureKHR_T {
+struct GPUAccelerationStructureKHR_T
+{
     GPUDevice device;
     VkAccelerationStructureKHR handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

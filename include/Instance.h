@@ -3,9 +3,10 @@
 #include "gpu/gpu.h"
 #include <atomic>
 
-struct GPUInstance_T {
+struct GPUInstance_T
+{
     VkInstance handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     std::atomic_uint refCount;
     bool destroyRequested;
 };

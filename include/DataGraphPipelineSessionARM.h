@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUDataGraphPipelineSessionARM_T {
+struct GPUDataGraphPipelineSessionARM_T
+{
     GPUDevice device;
     VkDataGraphPipelineSessionARM handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

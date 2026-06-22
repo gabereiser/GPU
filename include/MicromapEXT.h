@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUMicromapEXT_T {
+struct GPUMicromapEXT_T
+{
     GPUDevice device;
     VkMicromapEXT handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

@@ -2,9 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUFence_T {
+struct GPUFence_T
+{
     GPUDevice device;
-    VkDevice deviceHandle;
     VkFence handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

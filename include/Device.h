@@ -3,11 +3,12 @@
 #include "gpu/gpu.h"
 #include <atomic>
 
-struct GPUDevice_T {
+struct GPUDevice_T
+{
     GPUPhysicalDevice physicalDevice;
     VkDevice handle;
-    const VkAllocationCallbacks* allocator;
-    uint32_t refCount;
+    const GpuAllocationCallbacks *allocator;
+    std::atomic_uint refCount;
     bool destroyRequested;
 };
 

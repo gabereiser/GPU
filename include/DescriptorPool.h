@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUDescriptorPool_T {
+struct GPUDescriptorPool_T
+{
     GPUDevice device;
     VkDescriptorPool handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

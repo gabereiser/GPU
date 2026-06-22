@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUIndirectCommandsLayoutNV_T {
+struct GPUIndirectCommandsLayoutNV_T
+{
     GPUDevice device;
     VkIndirectCommandsLayoutNV handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

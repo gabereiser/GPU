@@ -6,7 +6,7 @@ struct GPUSemaphoreSciSyncPoolNV_T
 {
     GPUDevice device;
     VkSemaphoreSciSyncPoolNV handle;
-    const VkAllocationCallbacks *allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };
 #endif

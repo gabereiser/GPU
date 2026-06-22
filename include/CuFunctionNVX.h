@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUCuFunctionNVX_T {
+struct GPUCuFunctionNVX_T
+{
     GPUDevice device;
     VkCuFunctionNVX handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

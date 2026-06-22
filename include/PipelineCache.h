@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUPipelineCache_T {
+struct GPUPipelineCache_T
+{
     GPUDevice device;
     VkPipelineCache handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };

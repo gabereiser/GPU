@@ -2,9 +2,10 @@
 
 #include "gpu/gpu.h"
 
-struct GPUShaderEXT_T {
+struct GPUShaderEXT_T
+{
     GPUDevice device;
     VkShaderEXT handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
     bool destroyRequested;
 };

@@ -2,8 +2,9 @@
 
 #include "gpu/gpu.h"
 
-struct GPUSamplerYcbcrConversion_T {
+struct GPUSamplerYcbcrConversion_T
+{
     GPUDevice device;
     VkSamplerYcbcrConversion handle;
-    const VkAllocationCallbacks* allocator;
+    const GpuAllocationCallbacks *allocator;
 };
