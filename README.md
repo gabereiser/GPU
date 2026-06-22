@@ -133,7 +133,7 @@ int main() {
     instanceInfo.ppEnabledExtensionNames = extensions;
 
     GPUInstance instance = nullptr;
-    if (gpuInstanceCreate(&instanceInfo, nullptr, &instance) != VK_SUCCESS) {
+    if (gpuInstanceCreate(&instanceInfo, nullptr, &instance) != GPU_SUCCESS) {
         fprintf(stderr, "Failed to create GPU instance\n");
         return 1;
     }
@@ -147,7 +147,7 @@ int main() {
         return 1;
     }
     GPUPhysicalDevice phys = nullptr;
-    if (gpuInstanceGetPhysicalDevice(instance, 0, &phys) != VK_SUCCESS) {
+    if (gpuInstanceGetPhysicalDevice(instance, 0, &phys) != GPU_SUCCESS) {
         fprintf(stderr, "Failed to get physical device\n");
         gpuInstanceDestroy(instance);
         return 1;
@@ -167,7 +167,7 @@ int main() {
     deviceInfo.pQueueCreateInfos = &queueInfo;
 
     GPUDevice device = nullptr;
-    if (gpuDeviceCreate(phys, &deviceInfo, nullptr, &device) != VK_SUCCESS) {
+    if (gpuDeviceCreate(phys, &deviceInfo, nullptr, &device) != GPU_SUCCESS) {
         fprintf(stderr, "Failed to create device\n");
         gpuPhysicalDeviceRelease(phys);
         gpuInstanceDestroy(instance);
@@ -182,6 +182,32 @@ int main() {
         fprintf(stderr, "Failed to get queue\n");
     } else {
         printf("GPU queue obtained successfully.\n");
+
+// The queue is now ready for command submission.
+// Typical next steps:
+//
+// 1. Create a command pool (one per thread or per queue family):
+//    GPUCommandPool cmdPool;
+//    gpuCommandPoolCreate(device, 0, &cmdPool);
+//
+// 2. Allocate a command buffer from the pool:
+//    GPUCommandBuffer cmd;
+//    gpuCommandBufferAllocate(cmdPool, &cmd);
+//
+// 3. Record commands (begin, bind pipeline, draw, end, etc.):
+//    gpuCmdBegin(cmd, ...);
+//    gpuCmdBindPipeline(cmd, pipeline);
+//    gpuCmdDraw(cmd, ...);
+//    gpuCmdEnd(cmd);
+//
+// 4. Submit the command buffer to the queue (optionally with a fence):
+//    GPUFence fence = nullptr;
+//    gpuQueueSubmit(queue, 1, &cmd, nullptr, &fence);
+//    // Wait for completion if needed:
+//    gpuWaitForFences(device, 1, &fence, 1, UINT64_MAX);
+//
+// 5. Clean‑up the command pool when done:
+//    gpuCommandPoolDestroy(cmdPool);
     }
 
     // Cleanup.
@@ -198,26 +224,62 @@ int main() {
 The managed layer follows the same object graph, but exposes disposable wrappers for C#.
 
 ```csharp
-using GPU;
 using System;
+using GPU;
 
-public static class Sample
+class Program
 {
-    public static void Run()
+    static void Main()
     {
-        // 1. Get the wrapper's Vulkan API version.
+        // Query the Vulkan version the wrapper targets
         uint apiVersion = Library.GetApiVersion();
-        Console.WriteLine($"GPU wrapper targets Vulkan API version {apiVersion}");
+        Console.WriteLine($"Vulkan API version: {apiVersion}");
 
-        // 2. List required instance extensions.
+        // Required instance extensions
         string[] extensions = Library.GetRequiredInstanceExtensions();
-        Console.WriteLine($"Required instance extensions ({extensions.Length}):");
-        foreach (var ext in extensions) {
-            Console.WriteLine($"  {ext}");
-        }
-        // Note: Full instance/device creation still requires Vulkan structs, which are
-        // forwarded by the GPU wrapper. The high‑level managed API does not provide
-        // abstractions for those structs yet.
+        Console.WriteLine("Instance extensions:");
+        foreach (var ext in extensions) Console.WriteLine($"  {ext}");
+
+        // Create the instance (struct layout mirrors native GPU structs)
+        var appInfo = new GpuApplicationInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_APPLICATION_INFO,
+            pApplicationName = "ManagedDemo",
+            apiVersion = apiVersion
+        };
+        var instInfo = new GpuInstanceCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+            pApplicationInfo = &appInfo,
+            enabledExtensionCount = (uint)extensions.Length,
+            ppEnabledExtensionNames = extensions
+        };
+        using var instance = Library.CreateInstance(ref instInfo);
+
+        // Enumerate physical devices
+        uint physCount = Library.InstanceGetPhysicalDeviceCount(instance.Handle);
+        Console.WriteLine($"Physical devices: {physCount}");
+
+        // Pick first device and create a logical device
+        Library.InstanceGetPhysicalDevice(instance.Handle, 0, out var phys);
+        var queueInfo = new GpuDeviceQueueCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+            queueFamilyIndex = 0,
+            queueCount = 1,
+            pQueuePriorities = stackalloc float[1] { 1.0f }
+        };
+        var devInfo = new GpuDeviceCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+            queueCreateInfoCount = 1,
+            pQueueCreateInfos = &queueInfo
+        };
+        using var device = Library.CreateDevice(phys, ref devInfo);
+
+        // Retrieve a queue
+        Library.DeviceGetQueue(device.Handle, 0, 0, out var queue);
+        Console.WriteLine($"Got queue: 0x{queue.ToString("X")}");
     }
 }
 ```
@@ -240,16 +302,16 @@ class Program
 {
     static void Main()
     {
-        // 1️⃣ Query the Vulkan version the wrapper targets
+        // Query the Vulkan version the wrapper targets
         uint apiVersion = Library.GetApiVersion();
         Console.WriteLine($"Vulkan API version: {apiVersion}");
 
-        // 2️⃣ Required instance extensions
+        // Required instance extensions
         string[] extensions = Library.GetRequiredInstanceExtensions();
         Console.WriteLine("Instance extensions:");
         foreach (var ext in extensions) Console.WriteLine($"  {ext}");
 
-        // 3️⃣ Create the instance (struct layout mirrors native GPU structs)
+        // Create the instance (struct layout mirrors native GPU structs)
         var appInfo = new GpuApplicationInfo
         {
             sType = GPU_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -265,11 +327,11 @@ class Program
         };
         using var instance = Library.CreateInstance(ref instInfo);
 
-        // 4️⃣ Enumerate physical devices
+        // Enumerate physical devices
         uint physCount = Library.InstanceGetPhysicalDeviceCount(instance.Handle);
         Console.WriteLine($"Physical devices: {physCount}");
 
-        // 5️⃣ Pick first device and create a logical device
+        // Pick first device and create a logical device
         Library.InstanceGetPhysicalDevice(instance.Handle, 0, out var phys);
         var queueInfo = new GpuDeviceQueueCreateInfo
         {
@@ -286,7 +348,7 @@ class Program
         };
         using var device = Library.CreateDevice(phys, ref devInfo);
 
-        // 6️⃣ Retrieve a queue
+        // Retrieve a queue
         Library.DeviceGetQueue(device.Handle, 0, 0, out var queue);
         Console.WriteLine($"Got queue: 0x{queue.ToString("X")}");
     }
