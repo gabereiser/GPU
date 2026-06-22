@@ -1,13 +1,14 @@
 #pragma once
 
 #include "gpu/gpu.h"
+#include <atomic>
 
 struct GPUQueue_T {
     GPUDevice device;
     VkQueue handle;
     uint32_t familyIndex;
     uint32_t queueIndex;
-    uint32_t refCount;
+    std::atomic_uint refCount;
     bool destroyRequested;
 };
 

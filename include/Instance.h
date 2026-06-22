@@ -1,11 +1,12 @@
 #pragma once
 
 #include "gpu/gpu.h"
+#include <atomic>
 
 struct GPUInstance_T {
     VkInstance handle;
     const VkAllocationCallbacks* allocator;
-    uint32_t refCount;
+    std::atomic_uint refCount;
     bool destroyRequested;
 };
 

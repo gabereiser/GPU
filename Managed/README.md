@@ -1,6 +1,6 @@
 # GPU.Managed
 
-`GPU.Managed` is the C# proxy layer for the native `GPU` library.
+`GPU.Managed` is the C# proxy layer for the native `GPU` library, which forwards Vulkan structs to the Vulkan loader. The managed API therefore works with the same Vulkan structures while providing a safe, disposable wrapper.
 
 Current goals:
 
@@ -36,7 +36,7 @@ using GPU;
 // Compile a fragment shader
 var (spirv, ok) = ShaderCompiler.CompileShader(
     GPUShaderLanguage.GLSL,
-    VkShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT,
+    ShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT,
     @"
     #version 460
     layout(location = 0) out vec4 outColor;

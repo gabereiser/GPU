@@ -1,13 +1,14 @@
 #pragma once
 
 #include "gpu/gpu.h"
+#include <atomic>
 
 struct GPUSwapchain_T {
     GPUDevice device;
     GPUSurface surface;
     VkSwapchainKHR handle;
     const VkAllocationCallbacks* allocator;
-    uint32_t refCount;
+    std::atomic_uint refCount;
     bool destroyRequested;
 };
 

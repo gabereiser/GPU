@@ -1,11 +1,12 @@
 #pragma once
 
 #include "gpu/gpu.h"
+#include <atomic>
 
 struct GPUPhysicalDevice_T {
     GPUInstance instance;
     VkPhysicalDevice handle;
-    uint32_t refCount;
+    std::atomic_uint refCount;
     bool destroyRequested;
 };
 
