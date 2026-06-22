@@ -3995,6 +3995,27 @@ GPU_API VkResult GPU_CALL gpuWaitForFences(VkDevice device, uint32_t fenceCount,
     return GPU_VK_CALL(vkWaitForFences)(device, fenceCount, pFences, waitAll, timeout);
 }
 
+// Wrapper that accepts GPUDevice and GPUFence handles.
+GPU_API VkResult GPU_CALL gpuDeviceWaitForFences(GPUDevice device, uint32_t fenceCount, const GPUFence* pFences, VkBool32 waitAll, uint64_t timeout)
+{
+    // Convert GPUDevice to VkDevice.
+    VkDevice vkDevice = gpuDeviceGetVkHandle(device);
+
+    // Allocate temporary array for VkFence handles.
+    VkFence* vkFences = (VkFence*)malloc(sizeof(VkFence) * fenceCount);
+    if (!vkFences) {
+        return VK_ERROR_OUT_OF_HOST_MEMORY;
+    }
+
+    for (uint32_t i = 0; i < fenceCount; ++i) {
+        vkFences[i] = gpuFenceGetVkHandle(pFences[i]);
+    }
+
+    VkResult result = gpuWaitForFences(vkDevice, fenceCount, vkFences, waitAll, timeout);
+    free(vkFences);
+    return result;
+}
+
 GPU_API VkResult GPU_CALL gpuWaitForPresent2KHR(VkDevice device, VkSwapchainKHR swapchain, const VkPresentWait2InfoKHR* pPresentWait2Info)
 {
     return GPU_VK_CALL(vkWaitForPresent2KHR)(device, swapchain, pPresentWait2Info);

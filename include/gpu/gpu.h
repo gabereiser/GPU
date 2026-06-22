@@ -2,6 +2,10 @@
 
 #include <stdint.h>
 #include <vulkan/vulkan.h>
+
+// Simple boolean aliases matching Vulkan's VkBool32 values.
+#define GPU_TRUE VK_TRUE
+#define GPU_FALSE VK_FALSE
 #if defined(VK_ENABLE_BETA_EXTENSIONS)
 #include <vulkan/vulkan_beta.h>
 #endif
@@ -393,6 +397,9 @@ GPU_API VkResult GPU_CALL gpuFenceCreate(
 GPU_API void GPU_CALL gpuFenceDestroy(GPUFence fence);
 GPU_API VkFence GPU_CALL gpuFenceGetVkHandle(GPUFence fence);
 GPU_API GPUDevice GPU_CALL gpuFenceGetDevice(GPUFence fence);
+
+// Wait for multiple fences using a GPUDevice and GPUFence handles.
+GPU_API VkResult GPU_CALL gpuDeviceWaitForFences(GPUDevice device, uint32_t fenceCount, const GPUFence* pFences, VkBool32 waitAll, uint64_t timeout);
 
 GPU_API VkResult GPU_CALL gpuSemaphoreCreate(
     GPUDevice device,

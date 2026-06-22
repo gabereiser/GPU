@@ -200,15 +200,22 @@ int main() {
 //    gpuCmdDraw(cmd, ...);
 //    gpuCmdEnd(cmd);
 //
-// 4. Submit the command buffer to the queue (optionally with a fence):
-//    GPUFence fence = nullptr;
-//    gpuQueueSubmit(queue, 1, &cmd, nullptr, &fence);
-//    // Wait for completion if needed:
-//    gpuWaitForFences(device, 1, &fence, 1, UINT64_MAX);
+// 4. Submit the command buffer to the queue (no explicit fence):
+//    gpuQueueSubmit(queue, 1, &cmd, nullptr, nullptr);
+//    // Wait for completion (queue‑idle):
+//    gpuQueueWaitIdle(queue);
 //
+// // Alternative: use a fence and the GPU‑friendly wrapper:
+// GPUFence fence = nullptr;
+// gpuQueueSubmit(queue, 1, &cmd, nullptr, &fence);
+// gpuDeviceWaitForFences(device, 1, &fence, GPU_TRUE, UINT64_MAX);
+// gpuFenceDestroy(fence);
+
+
 // 5. Clean‑up the command pool when done:
 //    gpuCommandPoolDestroy(cmdPool);
-    }
+
+
 
     // Cleanup.
     gpuQueueRelease(queue);
