@@ -82,7 +82,7 @@ cmake --build build --config Release
 ## Native Usage Example (GPU Wrapper)
 
 **Threading Model**
-- `GpuInstance` (VkInstance) creation and its associated physical‑device (adapter) enumeration must be performed on the main thread. This mirrors Vulkan’s recommendation that instance/device creation happen before any multithreaded work and simplifies driver initialization.
+- `GpuInstance` creation and its associated physical‑device (adapter) enumeration must be performed on the main thread. This mirrors the GPU API’s recommendation that instance/device creation happen before any multithreaded work and simplifies driver initialization.
 - After the instance, physical device, and logical device are created, all other wrapper calls (queue retrieval, command submission, etc.) are thread‑safe. Operations are serviced on a first‑come‑first‑served basis unless you explicitly synchronize with Vulkan semaphores or fences.
 - The library’s reference counting is atomic, so `retain`/`drop` can be called from any thread.
 - If you need stricter ordering, use your own synchronization primitives around queue submissions.
