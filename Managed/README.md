@@ -23,3 +23,32 @@ Current status:
 - the full generated managed Vulkan command/type surface is not checked into the repo yet
 
 The managed layer keeps the low-level interop core internal and unsafe, while exposing a safe-shaped public API for consumers. Pointer-valued Vulkan parameters are still represented explicitly where Vulkan itself requires pointer semantics.
+
+---
+
+### Shader compilation
+
+The library ships with `gpuCompileShader` and `gpuFreeShaderBinary`, enabling runtime compilation of GLSL/HLSL source to SPIR‑V.
+
+```csharp
+using GPU;
+
+// Compile a fragment shader
+var (spirv, ok) = ShaderCompiler.CompileShader(
+    GPUShaderLanguage.GLSL,
+    VkShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT,
+    @"
+    #version 460
+    layout(location = 0) out vec4 outColor;
+    void main() { outColor = vec4(1,0,0,1); }
+    "
+);
+
+if (ok)
+{
+    var module = ShaderModule.Create(deviceHandle, spirv);
+    // use `module` when building pipelines
+}
+```
+
+The helper takes a C# `string`, converts it to UTF‑8, copies the native SPIR‑V buffer into a managed `byte[]`, and frees the native allocation automatically.

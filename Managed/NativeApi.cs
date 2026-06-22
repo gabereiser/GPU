@@ -362,6 +362,9 @@ internal unsafe readonly struct NativeApi
     public readonly delegate* unmanaged<nint, nint> gpuSurfaceGetInstance;
     public readonly delegate* unmanaged<nint, nuint> gpuSurfaceKHRGetVkHandle;
     public readonly delegate* unmanaged<nint, nint> gpuSurfaceKHRGetInstance;
+    // Shader compilation helpers (batteries‑included)
+    public readonly delegate* unmanaged<int, uint, sbyte*, nuint, void**, nuint*, bool> gpuCompileShader;
+    public readonly delegate* unmanaged<void*, void> gpuFreeShaderBinary;
 
     public readonly delegate* unmanaged<nint, void*, void*, nint*, Result> gpuDebugReportCallbackEXTCreate;
     public readonly delegate* unmanaged<nint, void> gpuDebugReportCallbackEXTDestroy;

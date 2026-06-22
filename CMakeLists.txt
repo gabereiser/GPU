@@ -6,9 +6,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
+# Disable optional optimizer that requires external SPIRV-Tools
+set(ENABLE_OPT 0)
+set(SHADERC_SKIP_TESTS ON)
+set(SHADERC_SKIP_EXAMPLES ON)
 add_subdirectory(dependencies/Vulkan-Headers)
 add_subdirectory(dependencies/Vulkan-Loader)
-add_subdirectory(dependencies/glfw)
+
+set(ENABLE_SPIRV ON)
+add_subdirectory(dependencies/glslang)
+
+
+
 
 set(GPU_GENERATOR ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_vulkan_abi.py)
 set(VK_XML ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Vulkan-Headers/registry/vk.xml)
@@ -50,10 +59,10 @@ add_library(${PROJECT_NAME} SHARED
     src/DescriptorUpdateTemplate.cpp
     src/SamplerYcbcrConversion.cpp
     src/PrivateDataSlot.cpp
-    src/Surface.cpp
+
     src/Swapchain.cpp
     src/Internal/Error.cpp
-    src/Internal/GlfwState.cpp
+
     src/DebugReportCallbackEXT.cpp
     src/DebugUtilsMessengerEXT.cpp
     src/ValidationCacheEXT.cpp
@@ -83,11 +92,20 @@ add_library(${PROJECT_NAME} SHARED
     src/CudaFunctionNV.cpp
     src/ExternalComputeQueueNV.cpp
     ${GPU_GENERATED_SOURCE}
+    src/Surface.cpp
+
 )
 
 add_dependencies(${PROJECT_NAME} generate_gpu_vulkan_abi)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE GPU_BUILD)
+target_sources(${PROJECT_NAME} PRIVATE src/ShaderCompiler/ShaderCompiler.cpp
+    dependencies/glslang/glslang/ResourceLimits/ResourceLimits.cpp
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    GPU_BUILD
+    GPU_USE_GLSLANG
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -100,5 +118,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     vulkan
-    glfw
+    glslang
 )
+
+# Test program to verify shader compilation
+# add_executable(shader_compile_test test/ShaderCompileTest.cpp)
+# Link against the GPU library and shaderc_shared (which pulls glslang, etc.)
+# target_link_libraries(shader_compile_test PRIVATE ${PROJECT_NAME})
+# Ensure Vulkan headers are found via include directories from earlier
+

@@ -27,6 +27,7 @@ typedef struct GPUPhysicalDevice_T* GPUPhysicalDevice;
 typedef struct GPUDevice_T* GPUDevice;
 typedef struct GPUQueue_T* GPUQueue;
 typedef struct GPUSurface_T* GPUSurface;
+
 typedef struct GPUSwapchain_T* GPUSwapchain;
 typedef struct GPUShaderModule_T* GPUShaderModule;
 typedef struct GPUPipeline_T* GPUPipeline;
@@ -83,10 +84,25 @@ typedef struct GPUCudaFunctionNV_T* GPUCudaFunctionNV;
 #endif
 typedef struct GPUExternalComputeQueueNV_T* GPUExternalComputeQueueNV;
 
+typedef enum {
+    GPU_SHADER_LANGUAGE_GLSL = 0,
+    GPU_SHADER_LANGUAGE_HLSL = 1
+} GPUShaderLanguage;
+
+GPU_API bool GPU_CALL gpuCompileShader(
+    GPUShaderLanguage language,
+    VkShaderStageFlagBits stage,
+    const char* source,
+    size_t sourceLen,
+    void** outSpirv,
+    size_t* outSize);
+
+GPU_API void GPU_CALL gpuFreeShaderBinary(void* spirv);
+
 GPU_API uint32_t GPU_CALL gpuGetApiVersion(void);
 GPU_API const char* GPU_CALL gpuGetLastError(void);
-GPU_API int32_t GPU_CALL gpuGetRequiredInstanceExtensions(const char*** extensions, uint32_t* count);
-GPU_API int32_t GPU_CALL gpuGetFramebufferSizeGlfw(void* glfwWindow, uint32_t* width, uint32_t* height);
+
+
 
 GPU_API VkResult GPU_CALL gpuInstanceCreate(
     const VkInstanceCreateInfo* createInfo,
@@ -129,16 +145,13 @@ GPU_API uint32_t GPU_CALL gpuQueueGetFamilyIndex(GPUQueue queue);
 GPU_API uint32_t GPU_CALL gpuQueueGetQueueIndex(GPUQueue queue);
 GPU_API void GPU_CALL gpuQueueRelease(GPUQueue queue);
 
-GPU_API VkResult GPU_CALL gpuSurfaceCreateGlfw(
-    GPUInstance instance,
-    void* glfwWindow,
-    const VkAllocationCallbacks* allocator,
-    GPUSurface* surface);
 GPU_API void GPU_CALL gpuSurfaceDestroy(GPUSurface surface);
 GPU_API VkSurfaceKHR GPU_CALL gpuSurfaceGetVkHandle(GPUSurface surface);
 GPU_API GPUInstance GPU_CALL gpuSurfaceGetInstance(GPUSurface surface);
 GPU_API VkSurfaceKHR GPU_CALL gpuSurfaceKHRGetVkHandle(GPUSurface surface);
 GPU_API GPUInstance GPU_CALL gpuSurfaceKHRGetInstance(GPUSurface surface);
+
+
 
 GPU_API VkResult GPU_CALL gpuDebugReportCallbackEXTCreate(
     GPUInstance instance,

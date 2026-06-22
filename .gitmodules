@@ -4,6 +4,13 @@
 [submodule "dependencies/Vulkan-Loader"]
 	path = dependencies/Vulkan-Loader
 	url = https://github.com/KhronosGroup/Vulkan-Loader.git
-[submodule "dependencies/glfw"]
-	path = dependencies/glfw
-	url = https://github.com/glfw/glfw.git
+[submodule "dependencies/glslang"]
+	path = dependencies/glslang
+	url = https://github.com/KhronosGroup/glslang.git
+
+[submodule "dependencies/shaderc"]
+	path = dependencies/shaderc
+	url = https://github.com/KhronosGroup/shaderc
+[submodule "dependencies/spirv-tools"]
+	path = dependencies/spirv-tools
+	url = https://github.com/KhronosGroup/SPIRV-Tools

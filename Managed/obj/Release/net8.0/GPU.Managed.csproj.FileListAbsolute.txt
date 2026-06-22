@@ -1,0 +1,12 @@
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.GeneratedMSBuildEditorConfig.editorconfig
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.AssemblyInfoInputs.cache
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.AssemblyInfo.cs
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.csproj.CoreCompileInputs.cache
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.sourcelink.json
+/Users/greiser/Projects/GPU/Managed/bin/Release/net8.0/GPU.Managed.deps.json
+/Users/greiser/Projects/GPU/Managed/bin/Release/net8.0/GPU.Managed.dll
+/Users/greiser/Projects/GPU/Managed/bin/Release/net8.0/GPU.Managed.pdb
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.dll
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/refint/GPU.Managed.dll
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/GPU.Managed.pdb
+/Users/greiser/Projects/GPU/Managed/obj/Release/net8.0/ref/GPU.Managed.dll
