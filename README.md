@@ -222,6 +222,79 @@ public static class Sample
 }
 ```
 
+### Managed API Overview
+
+- The .NET wrapper lives in the **Managed** project and is built as a class library (`GPU.Managed.csproj`).
+- All native handles are exposed as `IntPtr`/`UIntPtr` (e.g. `IntPtr Instance`, `IntPtr Device`).
+- Lifetime is explicit: each wrapper class implements `IDisposable` and calls the corresponding `gpu*Drop`/`gpu*Destroy` in `Dispose`.
+- Reference counting is performed by the native side, so you can safely share handles across threads; retain when storing a handle and drop when finished.
+- Helper static methods (`Library.GetApiVersion`, `Library.GetRequiredInstanceExtensions`, etc.) wrap the most common native calls.
+
+#### Minimal C# program
+
+```csharp
+using System;
+using GPU;
+
+class Program
+{
+    static void Main()
+    {
+        // 1️⃣ Query the Vulkan version the wrapper targets
+        uint apiVersion = Library.GetApiVersion();
+        Console.WriteLine($"Vulkan API version: {apiVersion}");
+
+        // 2️⃣ Required instance extensions
+        string[] extensions = Library.GetRequiredInstanceExtensions();
+        Console.WriteLine("Instance extensions:");
+        foreach (var ext in extensions) Console.WriteLine($"  {ext}");
+
+        // 3️⃣ Create the instance (struct layout mirrors native GPU structs)
+        var appInfo = new GpuApplicationInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_APPLICATION_INFO,
+            pApplicationName = "ManagedDemo",
+            apiVersion = apiVersion
+        };
+        var instInfo = new GpuInstanceCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+            pApplicationInfo = &appInfo,
+            enabledExtensionCount = (uint)extensions.Length,
+            ppEnabledExtensionNames = extensions
+        };
+        using var instance = Library.CreateInstance(ref instInfo);
+
+        // 4️⃣ Enumerate physical devices
+        uint physCount = Library.InstanceGetPhysicalDeviceCount(instance.Handle);
+        Console.WriteLine($"Physical devices: {physCount}");
+
+        // 5️⃣ Pick first device and create a logical device
+        Library.InstanceGetPhysicalDevice(instance.Handle, 0, out var phys);
+        var queueInfo = new GpuDeviceQueueCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+            queueFamilyIndex = 0,
+            queueCount = 1,
+            pQueuePriorities = stackalloc float[1] { 1.0f }
+        };
+        var devInfo = new GpuDeviceCreateInfo
+        {
+            sType = GPU_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+            queueCreateInfoCount = 1,
+            pQueueCreateInfos = &queueInfo
+        };
+        using var device = Library.CreateDevice(phys, ref devInfo);
+
+        // 6️⃣ Retrieve a queue
+        Library.DeviceGetQueue(device.Handle, 0, 0, out var queue);
+        Console.WriteLine($"Got queue: 0x{queue.ToString("X")}");
+    }
+}
+```
+
+*Note*: The marshaling helpers in `Managed/GpuMarshal.cs` handle conversion of unmanaged string arrays and pointer fields required by the native structs.
+
 If you need to build UTF-8 strings or unmanaged arrays for GPU structs, see [Managed/GpuMarshal.cs](Managed/GpuMarshal.cs).
 
 ## Runtime Expectations
